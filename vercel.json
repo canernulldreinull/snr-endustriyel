@@ -1,8 +1,14 @@
 {
-  "rewrites": [
+  "version": 2,
+  "public": true,
+  "routes": [
     {
-      "source": "/api/quote",
-      "destination": "/api/quote.js"
+      "src": "/api/quote",
+      "dest": "/api/quote.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
     }
   ]
 }
