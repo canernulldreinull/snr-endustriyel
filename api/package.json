@@ -1,5 +1,5 @@
 {
-  "name": "snr-endustriyel",
+  "name": "snr-api",
   "version": "1.0.0",
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1"
