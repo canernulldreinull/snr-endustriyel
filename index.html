@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SNR Endüstriyel Temizlik Ürünleri | Kurumsal Hijyen Tedarikçisi</title>
+<meta name="description" content="SNR Endüstriyel Temizlik Ürünleri — işletmeniz için hijyen kağıtları, temizlik kimyasalları, sarf malzemeleri ve dispenser ekipmanları. Toptan tedarik, hızlı teklif." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          base: { 50: "#f8fafc", 100: "#f1f5f9" },
+          ink: { DEFAULT: "#0f172a", soft: "#334155" },
+          brand: { DEFAULT: "#0284c7", dark: "#0369a1", 50: "#f0f9ff", 100: "#e0f2fe" },
+          tag: { DEFAULT: "#b45309", 50: "#fffbeb" },
+        },
+        fontFamily: {
+          display: ["'Space Grotesk'", "sans-serif"],
+          body: ["'Inter'", "sans-serif"],
+          mono: ["'JetBrains Mono'", "monospace"],
+        },
+        boxShadow: {
+          card: "0 1px 2px rgba(15, 23, 42, 0.06), 0 8px 24px -12px rgba(15, 23, 42, 0.12)",
+          cardHover: "0 4px 12px rgba(15, 23, 42, 0.08), 0 20px 32px -12px rgba(2, 132, 199, 0.18)",
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; }
+  .blueprint-grid { background-image: linear-gradient(to right, rgba(2, 132, 199, 0.07) 1px, transparent 1px), linear-gradient(to bottom, rgba(2, 132, 199, 0.07) 1px, transparent 1px); background-size: 40px 40px; }
+  .tag-perforation { background-image: repeating-linear-gradient(to right, #cbd5e1 0, #cbd5e1 6px, transparent 6px, transparent 12px); }
+  .filter-chip[data-active="true"] { background-color: #0284c7; color: #ffffff; border-color: #0284c7; }
+  .filter-chip[data-active="true"] .filter-count { background-color: rgba(255,255,255,0.22); color: #ffffff; }
+  #mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+  #mobile-menu.open { max-height: 480px; }
+  .modal-backdrop { transition: opacity 0.25s ease; }
+  .modal-panel { transition: transform 0.3s ease, opacity 0.3s ease; }
+  .product-card { transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
+  .product-card:hover { transform: translateY(-3px); }
+  .category-box { transition: all 0.3s ease; }
+  .category-box:hover { transform: translateY(-5px); }
+</style>
+</head>
+<body class="bg-base-50 text-ink antialiased flex flex-col min-h-screen">
+
+<!-- HEADER -->
+<header id="main-header" class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 transition-all duration-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div id="header-container" class="flex items-center justify-between h-20 sm:h-24 transition-all duration-300">
+      
+      <!-- Sola Yaklaştırılmış ve Büyütülmüş Logo -->
+      <a href="#top" class="flex items-center shrink-0 -ml-1 sm:ml-0 py-2" aria-label="SNR Endüstriyel Anasayfa">
+        <img id="main-logo" src="img/logo.png" alt="SNR Endüstriyel Logo" class="h-14 sm:h-20 w-auto object-contain max-h-full transition-all duration-300" />
+      </a>
+
+      <!-- Masaüstü Navigasyon -->
+      <nav class="hidden lg:flex items-center gap-8 font-medium text-sm text-ink-soft">
+        <a href="#kategoriler" class="hover:text-brand transition-colors">Kategoriler</a>
+        <a href="#katalog" class="hover:text-brand transition-colors">Tüm Ürünler</a>
+        <a href="#neden-snr" class="hover:text-brand transition-colors">Neden SNR</a>
+        <a href="#iletisim" class="hover:text-brand transition-colors">İletişim</a>
+      </nav>
+
+      <!-- Sağ Aksiyonlar & Mobilde Boşluğu Dolduran Teklif Butonu -->
+      <div class="flex items-center gap-2.5 sm:gap-4">
+        
+        <!-- Mobilde Ortayı Dolduran WhatsApp / Teklif Hapı -->
+        <a href="https://wa.me/905001234567?text=Merhaba%2C%20fiyat%20teklifi%20almak%20istiyorum." 
+           target="_blank" 
+           class="inline-flex lg:hidden items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm active:scale-95 transition-transform">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>Hızlı Teklif</span>
+        </a>
+
+        <!-- Masaüstü Teklif Al Butonu -->
+        <a href="#iletisim" class="hidden lg:inline-flex items-center gap-1.5 bg-brand hover:bg-brand-dark text-white text-sm font-semibold px-5 py-3 rounded-lg transition-colors shadow-sm">
+          Teklif Al
+        </a>
+
+        <!-- Hamburger Menü Butonu -->
+        <button id="menu-toggle" type="button" class="lg:hidden grid place-items-center w-11 h-11 rounded-lg border border-slate-200 text-ink hover:bg-base-100 transition-colors">
+          <svg id="icon-open" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
+          <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobil Açılır Menü -->
+    <nav id="mobile-menu" class="lg:hidden">
+      <div class="flex flex-col gap-1 pb-4 pt-1 font-medium text-ink-soft">
+        <a href="#kategoriler" class="mobile-link px-2 py-3 rounded-lg hover:bg-base-100">Kategoriler</a>
+        <a href="#katalog" class="mobile-link px-2 py-3 rounded-lg hover:bg-base-100">Tüm Ürünler</a>
+        <a href="#neden-snr" class="mobile-link px-2 py-3 rounded-lg hover:bg-base-100">Neden SNR</a>
+        <a href="#iletisim" class="mobile-link px-2 py-3 rounded-lg hover:bg-base-100">İletişim</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="top" class="relative overflow-hidden bg-white border-b border-slate-200">
+  <div class="absolute inset-0 blueprint-grid [mask-image:radial-gradient(ellipse_60%_60%_at_50%_0%,black,transparent)]"></div>
+  <div class="relative max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 pt-12 pb-16 sm:pt-20 sm:pb-24">
+    <div class="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+      
+      <!-- Metin Sol Taraf -->
+      <div class="lg:col-span-7">
+        <span class="inline-flex items-center gap-2 text-xs font-mono font-medium tracking-wide text-brand-dark bg-brand-50 border border-brand-100 rounded-full px-3 py-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-brand"></span>KURUMSAL &amp; TOPTAN HİJYEN TEDARİĞİ
+        </span>
+        <h1 class="mt-5 font-display font-semibold text-[2.15rem] leading-[1.12] sm:text-5xl sm:leading-[1.1] text-ink text-balance">
+          İşletmeniz İçin Kusursuz Hijyen, <span class="text-brand">Güvenilir Tedarik.</span>
+        </h1>
+        <p class="mt-5 text-base sm:text-lg text-ink-soft leading-relaxed max-w-lg">
+          Otel, restoran, ofis ve üretim tesisleri için hijyen kağıtları, temizlik kimyasalları ve sarf malzemelerini tek noktadan, toptan fiyat avantajıyla tedarik ediyoruz.
+        </p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+          <a href="#kategoriler" class="inline-flex justify-center items-center gap-2 bg-brand hover:bg-brand-dark text-white font-semibold text-sm px-6 py-3.5 rounded-lg transition-colors shadow-sm">
+            Ürün Gruplarını İncele
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+          </a>
+        </div>
+      </div>
+      
+      <!-- HERO GÖRSELİ -->
+      <div class="lg:col-span-5 relative mt-4 lg:mt-0">
+        <div class="relative rounded-2xl overflow-hidden border border-slate-200 shadow-xl">
+          <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80" alt="Endüstriyel Sevkiyat ve Depolama" class="object-cover h-[320px] sm:h-[400px] w-full" />
+        </div>
+        
+        <!-- Yüzen Başarı Rozeti -->
+        <div class="absolute -bottom-5 -left-3 sm:-bottom-6 sm:-left-6 bg-white p-4 sm:p-5 rounded-2xl shadow-xl border border-slate-100 flex items-center gap-4 z-10">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+          </div>
+          <div>
+            <p class="font-display font-bold text-lg sm:text-xl text-ink">10.000+</p>
+            <p class="text-[11px] sm:text-xs font-medium text-ink-soft">Başarılı Sevkiyat</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- GÜVEN ŞERİDİ (TRUST BAR) -->
+<section class="bg-base-50 border-b border-slate-200 py-8 overflow-hidden">
+  <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+    <p class="text-center text-xs font-mono font-medium text-slate-400 uppercase tracking-widest mb-6">Bölgenin Lider İşletmelerinin Güvenilir Çözüm Ortağı</p>
+    <div class="flex flex-wrap justify-center items-center gap-8 sm:gap-16 opacity-50 grayscale select-none">
+      <span class="font-display font-bold text-lg sm:text-xl tracking-tighter">HOTEL PLAZA</span>
+      <span class="font-display font-bold text-lg sm:text-xl tracking-tighter">MEDICARE<span class="font-light">CLINIC</span></span>
+      <span class="font-display font-bold text-lg sm:text-xl tracking-tighter">TECH<span class="font-light">PARK</span></span>
+      <span class="font-display font-bold text-lg sm:text-xl tracking-tighter">FOOD<span class="font-light">CO.</span></span>
+      <span class="font-display font-bold text-lg sm:text-xl tracking-tighter">URBAN<span class="font-light">MALL</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- KATEGORİLER VİTRİNİ -->
+<section id="kategoriler" class="bg-white max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-16">
+  <div class="text-center max-w-2xl mx-auto mb-10">
+    <span class="font-mono text-xs font-semibold text-brand-dark tracking-wide uppercase">Ana Kategoriler</span>
+    <h2 class="mt-2 font-display font-semibold text-2xl sm:text-3xl text-ink">İhtiyacınız Olan Ürün Grubunu Seçin</h2>
+  </div>
+  
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <button type="button" data-main-category="kagit" class="category-box group text-left bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-cardHover hover:border-brand">
+      <div class="w-14 h-14 rounded-xl bg-brand-50 text-brand grid place-items-center mb-5 group-hover:scale-110 transition-transform">
+        <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+      </div>
+      <h3 class="font-display font-semibold text-lg text-ink group-hover:text-brand transition-colors">Hijyen Kağıtları</h3>
+      <p class="mt-2 text-sm text-ink-soft">Z Katlama havlu, tuvalet kağıdı ve dispanser ürünleri.</p>
+    </button>
+    <button type="button" data-main-category="kimyasal" class="category-box group text-left bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-cardHover hover:border-brand">
+      <div class="w-14 h-14 rounded-xl bg-brand-50 text-brand grid place-items-center mb-5 group-hover:scale-110 transition-transform">
+        <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L4.2 14.5m15.6 15.3l-1.57-.393a9.065 9.065 0 00-6.23-.693m0 0A9.065 9.065 0 014.2 14.5M12 15v8.25" /></svg>
+      </div>
+      <h3 class="font-display font-semibold text-lg text-ink group-hover:text-brand transition-colors">Kimyasallar</h3>
+      <p class="mt-2 text-sm text-ink-soft">Endüstriyel deterjanlar, yağ çözücüler ve dezenfektanlar.</p>
+    </button>
+    <button type="button" data-main-category="sarf" class="category-box group text-left bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-cardHover hover:border-brand">
+      <div class="w-14 h-14 rounded-xl bg-brand-50 text-brand grid place-items-center mb-5 group-hover:scale-110 transition-transform">
+        <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
+      </div>
+      <h3 class="font-display font-semibold text-lg text-ink group-hover:text-brand transition-colors">Sarf Malzemeler</h3>
+      <p class="mt-2 text-sm text-ink-soft">Çöp poşetleri, mop sistemleri ve temizlik bezleri.</p>
+    </button>
+    <button type="button" data-main-category="dispenser" class="category-box group text-left bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-cardHover hover:border-brand">
+      <div class="w-14 h-14 rounded-xl bg-brand-50 text-brand grid place-items-center mb-5 group-hover:scale-110 transition-transform">
+        <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" /></svg>
+      </div>
+      <h3 class="font-display font-semibold text-lg text-ink group-hover:text-brand transition-colors">Ekipmanlar</h3>
+      <p class="mt-2 text-sm text-ink-soft">Sensörlü makineler, dispenserler ve temizlik arabaları.</p>
+    </button>
+  </div>
+</section>
+
+<!-- ÜRÜN LİSTELEME ALANI -->
+<section id="katalog" class="flex-grow bg-base-50 border-t border-slate-200 py-16">
+  <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <h2 id="katalog-title" class="font-display font-semibold text-2xl text-ink">Tüm Ürünler</h2>
+      <p id="result-count" class="text-sm font-mono text-ink-soft"></p>
+    </div>
+    <div id="filter-bar" class="mb-8 flex flex-wrap gap-2.5"></div>
+    <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+  </div>
+</section>
+
+<!-- NEDEN SNR -->
+<section id="neden-snr" class="bg-white border-y border-slate-200 py-16 sm:py-24">
+  <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+      
+      <!-- Görsel Sol Taraf -->
+      <div class="lg:col-span-5 relative">
+        <div class="relative rounded-2xl overflow-hidden border border-slate-200 shadow-xl">
+          <img src="https://images.unsplash.com/photo-1563453392212-326f5e854473?auto=format&fit=crop&w=800&q=80" alt="Hijyen ve Temizlik Ürünleri" class="object-cover h-[340px] sm:h-[460px] w-full" />
+        </div>
+        
+        <!-- Yüzen Tecrübe Rozeti -->
+        <div class="absolute top-6 -right-4 sm:-right-6 bg-brand text-white p-4 sm:p-6 rounded-2xl shadow-xl text-center border border-brand-dark z-10">
+          <p class="font-display font-bold text-3xl sm:text-4xl">15</p>
+          <p class="text-xs sm:text-sm font-medium mt-1">Yıllık<br>Tecrübe</p>
+        </div>
+      </div>
+
+      <!-- Metin Sağ Taraf -->
+      <div class="lg:col-span-7">
+        <span class="font-mono text-xs font-semibold text-brand-dark tracking-wide uppercase">Hakkımızda</span>
+        <h2 class="mt-2 font-display font-semibold text-2xl sm:text-3xl text-ink">Kurumsal hijyen tedarikinde uzun soluklu çözüm ortağınız</h2>
+        <p class="mt-4 text-ink-soft leading-relaxed">
+          SNR Endüstriyel olarak; otel, restoran, ofis, fabrika ve kamu kurumlarının hijyen ve temizlik ihtiyaçlarını düzenli, kesintisiz ve rekabetçi fiyatlarla karşılıyoruz. Geniş dağıtım ağımızla operasyonlarınızı asla yarı yolda bırakmıyoruz.
+        </p>
+        
+        <div class="mt-8 space-y-5">
+          <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-base-50 shadow-sm border border-slate-200 text-brand grid place-items-center shrink-0">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+            </div>
+            <div>
+              <h3 class="font-display font-semibold text-ink text-base">Geniş Lojistik Ağı</h3>
+              <p class="mt-0.5 text-sm text-ink-soft">Şehir içi ve şehirler arası düzenli sevkiyat rotalarıyla zamanında teslimat.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-base-50 shadow-sm border border-slate-200 text-brand grid place-items-center shrink-0">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+            </div>
+            <div>
+              <h3 class="font-display font-semibold text-ink text-base">Kalite Standartları</h3>
+              <p class="mt-0.5 text-sm text-ink-soft">Sektör standartlarına uygun, güvenilir ve sertifikalı tedarik zinciri.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-base-50 shadow-sm border border-slate-200 text-brand grid place-items-center shrink-0">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            </div>
+            <div>
+              <h3 class="font-display font-semibold text-ink text-base">Toptan Fiyat Avantajı</h3>
+              <p class="mt-0.5 text-sm text-ink-soft">İşletme hacminize uygun rekabetçi toptan fiyatlandırma modelleri.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- İLETİŞİM FORMU -->
+<section id="iletisim" class="bg-base-50 max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-16 sm:py-20">
+  <div class="grid lg:grid-cols-5 gap-10 lg:gap-14">
+    <div class="lg:col-span-3">
+      <h2 class="font-display font-semibold text-2xl sm:text-3xl text-ink">Size özel teklifi hazırlayalım</h2>
+      <p class="mt-3 text-ink-soft">Formu doldurun, ekibimiz en kısa sürede dönüş yapsın.</p>
+      <form id="quote-form" class="mt-8 grid sm:grid-cols-2 gap-4">
+        <div class="sm:col-span-1"><input type="text" name="name" required class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-brand" placeholder="Ad Soyad" /></div>
+        <div class="sm:col-span-1"><input type="text" name="company" class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-brand" placeholder="Firma Adı" /></div>
+        <div class="sm:col-span-1"><input type="tel" name="phone" required class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-brand" placeholder="Telefon" /></div>
+        <div class="sm:col-span-1">
+          <select name="category" required class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-brand">
+            <option value="">İlgilenilen Kategori</option>
+            <option value="kagit">Hijyen Kağıtları</option>
+            <option value="kimyasal">Kimyasallar</option>
+            <option value="sarf">Sarf Malzemeleri</option>
+            <option value="dispenser">Dispenser &amp; Ekipman</option>
+          </select>
+        </div>
+        <div class="sm:col-span-2"><textarea name="message" rows="4" required class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-brand" placeholder="Mesajınız..."></textarea></div>
+        <div class="sm:col-span-2">
+          <button type="submit" class="w-full sm:w-auto bg-brand text-white font-semibold text-sm px-6 py-3.5 rounded-lg">Teklif Gönder</button>
+          <p id="form-success" class="hidden mt-3 text-sm p-3 rounded-lg"></p>
+        </div>
+      </form>
+    </div>
+    <div class="lg:col-span-2 bg-ink rounded-2xl p-7 text-white shadow-xl">
+      <h3 class="font-display font-semibold text-lg">İletişim Bilgileri</h3>
+      <ul class="mt-6 space-y-5 text-sm text-slate-300">
+        <li>Organize Sanayi Bölgesi, İstanbul</li>
+        <li>+90 500 123 45 67</li>
+        <li>info@snrendustriyel.com</li>
+      </ul>
+      <a href="https://wa.me/905001234567" target="_blank" class="mt-7 w-full inline-flex justify-center items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-3 rounded-lg transition-colors">WhatsApp ile Ulaş</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-ink text-slate-300">
+  <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-12">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+      
+      <!-- Footer Logo -->
+      <div>
+        <div class="flex items-center gap-2.5">
+          <img src="img/logo.png" alt="SNR Endüstriyel Logo" class="h-14 w-auto object-contain brightness-0 invert" />
+        </div>
+        <p class="mt-4 text-sm leading-relaxed text-slate-400 max-w-xs">İşletmeler için hijyen ve temizlik ürünlerinde güvenilir toptan tedarik çözümü.</p>
+      </div>
+
+      <div>
+        <h4 class="font-display font-semibold text-white text-sm">Kurumsal & Yasal</h4>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          <li><a href="#neden-snr" class="hover:text-white transition-colors">Hakkımızda</a></li>
+          <li><a href="#iletisim" class="hover:text-white transition-colors">İletişim Bilgileri</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">KVKK Aydınlatma Metni</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Gizlilik ve Çerez Politikası</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-display font-semibold text-white text-sm">Kategoriler</h4>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          <li><a href="#" data-footer-filter="kagit" class="hover:text-white transition-colors">Hijyen Kağıtları</a></li>
+          <li><a href="#" data-footer-filter="kimyasal" class="hover:text-white transition-colors">Temizlik Kimyasalları</a></li>
+          <li><a href="#" data-footer-filter="sarf" class="hover:text-white transition-colors">Sarf Malzemeleri</a></li>
+          <li><a href="#" data-footer-filter="dispenser" class="hover:text-white transition-colors">Dispenser & Ekipman</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-display font-semibold text-white text-sm">İletişim</h4>
+        <ul class="mt-4 space-y-2.5 text-sm text-slate-400">
+          <li>+90 500 123 45 67</li>
+          <li>info@snrendustriyel.com</li>
+          <li>Organize Sanayi Bölgesi, İstanbul</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row justify-between gap-3 text-xs text-slate-500">
+      <span>© <span id="year"></span> SNR Endüstriyel Temizlik Ürünleri LTD. ŞTİ. Tüm hakları saklıdır.</span>
+      <span>B2B Toptan Tedarik & Satış Kataloğu</span>
+    </div>
+  </div>
+</footer>
+
+<!-- SABİT WHATSAPP BUTONU -->
+<a href="https://wa.me/905001234567" target="_blank" class="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 grid place-items-center w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/30 transition-transform hover:scale-105">
+  <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M12.04 2.003c-5.53 0-10.02 4.48-10.02 10.02 0 1.77.46 3.5 1.34 5.02L2 22l5.11-1.34a9.98 9.98 0 004.93 1.31h.01c5.53 0 10.02-4.48 10.02-10.02 0-2.68-1.04-5.2-2.93-7.09a9.96 9.96 0 00-7.1-2.94zm5.87 14.3c-.25.7-1.45 1.34-2 1.42-.51.08-1.15.11-1.86-.12-.43-.13-.98-.32-1.7-.62-2.98-1.29-4.92-4.28-5.07-4.48-.15-.2-1.22-1.62-1.22-3.09 0-1.47.77-2.19 1.05-2.49.27-.3.6-.37.8-.37.2 0 .4.002.57.01.18.008.43-.07.67.51.25.6.85 2.07.92 2.22.07.15.12.33.02.53-.1.2-.15.32-.3.5-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.3.77 1.27 1.65 2.06 1.13 1.01 2.09 1.32 2.39 1.47.3.15.47.13.65-.08.17-.2.74-.86.94-1.16.2-.3.4-.25.67-.15.27.1 1.73.82 2.02.97.3.15.5.22.57.35.07.13.07.75-.18 1.45z"/></svg>
+</a>
+
+<!-- MODAL -->
+<div id="product-modal" class="fixed inset-0 z-[60] hidden">
+  <div id="modal-backdrop" class="modal-backdrop absolute inset-0 bg-ink/60 backdrop-blur-sm opacity-0"></div>
+  <div class="relative z-10 min-h-full flex items-end sm:items-center justify-center p-0 sm:p-6">
+    <div id="modal-panel" class="modal-panel translate-y-6 sm:translate-y-0 opacity-0 sm:scale-95 w-full sm:max-w-lg bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+      <div class="h-2 tag-perforation shrink-0"></div>
+      <div class="p-6 overflow-y-auto">
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <div id="modal-icon" class="w-12 h-12 rounded-xl bg-brand-50 text-brand grid place-items-center"></div>
+            <div>
+              <span id="modal-category" class="text-xs font-mono font-semibold text-brand-dark uppercase"></span>
+              <h3 id="modal-title" class="font-display font-semibold text-lg text-ink"></h3>
+            </div>
+          </div>
+          <button id="modal-close" class="w-9 h-9 rounded-lg hover:bg-base-100 grid place-items-center"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
+        </div>
+        <div class="mt-4 flex gap-2"><span class="text-xs bg-ink text-white rounded px-2 py-1">Stok: <span id="modal-code"></span></span><span id="modal-badge" class="hidden text-xs bg-amber-50 text-amber-700 border border-amber-200 rounded px-2 py-1"></span></div>
+        <p id="modal-desc" class="mt-4 text-sm text-ink-soft"></p>
+        <ul id="modal-specs" class="mt-5 pt-5 border-t border-slate-200 space-y-2"></ul>
+      </div>
+      <div class="p-5 border-t border-slate-200 bg-base-100">
+        <a id="modal-whatsapp" href="#" target="_blank" class="w-full inline-flex justify-center items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-3.5 rounded-lg">WhatsApp ile Fiyat Sor</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/products.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
