@@ -1,7 +1,6 @@
 const { createClient } = require('@supabase/supabase-js');
 
 module.exports = async (req, res) => {
-  // CORS Başlıkları
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -18,27 +17,36 @@ module.exports = async (req, res) => {
     return res.status(405).json({ success: false, message: 'Yalnızca POST istekleri kabul edilir.' });
   }
 
-  // Ortam değişkenlerini oku ve temizle
-  const rawUrl = process.env.SUPABASE_URL || '';
-  const rawKey = process.env.SUPABASE_KEY || '';
-
-  const supabaseUrl = rawUrl.replace(/[\n\r\t]/g, '').trim();
-  const supabaseKey = rawKey.replace(/[\n\r\t]/g, '').trim();
-
-  if (!supabaseUrl.startsWith('http://') && !supabaseUrl.startsWith('https://')) {
-    return res.status(500).json({
-      success: false,
-      message: `Geçersiz SUPABASE_URL: "${supabaseUrl}". Lütfen Vercel panelindeki SUPABASE_URL değerini kontrol edin.`
-    });
-  }
+  const supabaseUrl = (process.env.SUPABASE_URL || '').trim();
+  const supabaseKey = (process.env.SUPABASE_KEY || '').trim();
 
   try {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const { fullName, email, phone, company, service, message } = req.body || {};
+    // Body parse işlemi (string geldiyse JSON'a çevir)
+    let body = req.body;
+    if (typeof body === 'string') {
+      try {
+        body = JSON.parse(body);
+      } catch (e) {
+        body = {};
+      }
+    }
+    body = body || {};
 
-    if (!fullName || !email || !phone || !service) {
-      return res.status(400).json({ success: false, message: 'Lütfen zorunlu alanları doldurun.' });
+    // Olası tüm alan isimlerini yakala (camelCase veya snake_case)
+    const fullName = body.fullName || body.full_name || body.name || '';
+    const email = body.email || '';
+    const phone = body.phone || body.telefon || '';
+    const company = body.company || body.firma || null;
+    const service = body.service || body.hizmet || 'Genel';
+    const message = body.message || body.mesaj || null;
+
+    if (!fullName || !email) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Lütfen isim ve e-posta alanlarını doldurun.' 
+      });
     }
 
     const { error } = await supabase
@@ -48,9 +56,9 @@ module.exports = async (req, res) => {
           full_name: fullName,
           email: email,
           phone: phone,
-          company: company || null,
+          company: company,
           service: service,
-          message: message || null
+          message: message
         }
       ]);
 
