@@ -405,5 +405,65 @@
 
 <script src="js/products.js"></script>
 <script src="js/app.js"></script>
+<script>
+  const form = document.getElementById('quote-form');
+  const formMsg = document.getElementById('form-success');
+
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerText;
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Gönderiliyor...';
+
+      if (formMsg) {
+        formMsg.classList.add('hidden');
+        formMsg.className = 'mt-3 text-sm p-3 rounded-lg hidden';
+      }
+
+      const formData = new FormData(form);
+      const data = {
+        name: formData.get('name'),
+        company: formData.get('company'),
+        phone: formData.get('phone'),
+        category: formData.get('category'),
+        message: formData.get('message')
+      };
+
+      try {
+        const res = await fetch('/api/quote', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        if (res.ok && result.success) {
+          form.reset();
+          if (formMsg) {
+            formMsg.innerText = 'Teklif talebiniz başarıyla iletildi. En kısa sürede sizinle iletişime geçilecektir.';
+            formMsg.className = 'mt-3 text-sm p-3 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 block';
+          }
+        } else {
+          if (formMsg) {
+            formMsg.innerText = 'Hata: ' + (result.message || 'Gönderim başarısız.');
+            formMsg.className = 'mt-3 text-sm p-3 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 block';
+          }
+        }
+      } catch (err) {
+        if (formMsg) {
+          formMsg.innerText = 'Sunucuya ulaşılamadı. Lütfen tekrar deneyin.';
+          formMsg.className = 'mt-3 text-sm p-3 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 block';
+        }
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = originalText;
+      }
+    });
+  }
+</script>
 </body>
 </html>

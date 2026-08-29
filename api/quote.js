@@ -1,5 +1,4 @@
 const { createClient } = require('@supabase/supabase-js');
-const querystring = require('querystring');
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -24,58 +23,44 @@ module.exports = async (req, res) => {
   try {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    let payload = req.body;
-    if (typeof payload === 'string') {
+    let body = req.body;
+    if (typeof body === 'string') {
       try {
-        payload = JSON.parse(payload);
+        body = JSON.parse(body);
       } catch (e) {
-        payload = querystring.parse(payload);
-      }
-    } else if (Buffer.isBuffer(payload)) {
-      const str = payload.toString('utf-8');
-      try {
-        payload = JSON.parse(str);
-      } catch (e) {
-        payload = querystring.parse(str);
+        body = {};
       }
     }
+    body = body || {};
 
-    payload = payload || {};
+    const fullName = body.name || body.fullName || 'İsimsiz';
+    const company = body.company || null;
+    const phone = body.phone || '';
+    const service = body.category || body.service || 'Genel';
+    const message = body.message || null;
+    const email = body.email || `${phone.replace(/\D/g, '') || 'teklif'}@snrendustriyel.com`;
 
-    const fullName = payload.fullName || payload.full_name || payload.name || payload.adsoyad || 'İsimsiz';
-    const email = payload.email || payload.eposta || payload.mail || 'eposta@bilgi.com';
-    const phone = payload.phone || payload.telefon || '';
-    const company = payload.company || payload.firma || null;
-    const service = payload.service || payload.hizmet || 'Genel';
-    const message = payload.message || payload.mesaj || null;
-
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('quotes')
       .insert([
         {
           full_name: fullName,
-          email: email,
-          phone: phone,
           company: company,
+          phone: phone,
           service: service,
-          message: message
+          message: message,
+          email: email
         }
       ]);
 
     if (error) {
-      console.error('SUPABASE DB ERROR:', error);
-      return res.status(500).json({ 
-        success: false, 
-        message: `Supabase Hatası: ${error.message} (Kod: ${error.code})` 
-      });
+      console.error('Supabase Error:', error);
+      return res.status(500).json({ success: false, message: error.message });
     }
 
     return res.status(200).json({ success: true, message: 'Teklif talebiniz başarıyla alındı.' });
   } catch (err) {
-    console.error('SERVER CATCH ERROR:', err);
-    return res.status(500).json({ 
-      success: false, 
-      message: `Sunucu Hatası: ${err.message}` 
-    });
+    console.error('Catch Error:', err);
+    return res.status(500).json({ success: false, message: err.message || 'Sunucu hatası oluştu.' });
   }
 };
