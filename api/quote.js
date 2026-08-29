@@ -35,7 +35,6 @@ module.exports = async (req, res) => {
     const name = body.name || 'Belirtilmedi';
     const email = body.email || 'Belirtilmedi';
     const phone = body.phone || 'Belirtilmedi';
-    const category = body.category || 'Genel';
     const message = body.message || 'Mesaj bırakılmadı.';
 
     const response = await fetch('https://api.resend.com/emails', {
@@ -55,11 +54,8 @@ module.exports = async (req, res) => {
             <p style="margin: 6px 0;"><strong>Ad Soyad:</strong> ${name}</p>
             <p style="margin: 6px 0;"><strong>E-posta:</strong> <a href="mailto:${email}" style="color: #0284c7;">${email}</a></p>
             <p style="margin: 6px 0;"><strong>Telefon:</strong> ${phone}</p>
-            <p style="margin: 6px 0;"><strong>İlgilenilen Kategori:</strong> ${category}</p>
-            <p style="margin: 12px 0 6px 0;"><strong>Mesaj:</strong></p>
-            <div style="background: #f8fafc; padding: 14px; border-left: 4px solid #0284c7; border-radius: 4px; font-size: 14px;">
-              ${message}
-            </div>
+            <p style="margin: 12px 0 6px 0;"><strong>Talep Edilen Ürünler / Mesaj:</strong></p>
+            <div style="background: #f8fafc; padding: 14px; border-left: 4px solid #0284c7; border-radius: 4px; font-size: 14px; white-space: pre-wrap;">${message}</div>
           </div>
         `
       })
