@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "functions": {
+    "api/quote.js": {
+      "runtime": "@vercel/node"
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/quote",
+      "dest": "/api/quote.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ]
+}

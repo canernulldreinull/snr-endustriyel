@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
   const apiKey = (process.env.RESEND_API_KEY || '').trim();
 
   if (!apiKey) {
-    return res.status(500).json({ success: false, message: 'RESEND_API_KEY ortam değişkeni bulunamadı.' });
+    return res.status(500).json({ success: false, message: 'RESEND_API_KEY ortam değişkeni eksik.' });
   }
 
   try {
