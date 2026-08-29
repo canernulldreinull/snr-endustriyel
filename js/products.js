@@ -1,4 +1,4 @@
-// Ürün Veritabanı
+// ÜRÜN VERİTABANI
 const products = [
   {
     id: "kagit-1",
@@ -82,8 +82,8 @@ const products = [
   }
 ];
 
-// Ürünleri Ekrana Basma
-function renderProducts(filter = 'kagit') { 
+// ÜRÜNLERİ EKRANA RENDER ETME VE FİLTRELEME
+function renderProducts(category = 'all') {
     const grid = document.getElementById('product-grid');
     const resultCount = document.getElementById('result-count');
     if (!grid) return;
@@ -91,21 +91,26 @@ function renderProducts(filter = 'kagit') {
     grid.innerHTML = '';
     
     let filtered = products;
-    if (filter !== 'all') {
-        filtered = products.filter(p => p.category === filter);
+    if (category !== 'all') {
+        filtered = products.filter(p => p.category === category);
     }
 
     if (resultCount) {
         resultCount.innerText = `${filtered.length} ürün listeleniyor`;
     }
 
+    if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-500 font-medium">Bu kategoride henüz ürün bulunmuyor.</div>`;
+        return;
+    }
+
     filtered.forEach(p => {
         const badgeHtml = p.badge ? `<span class="absolute top-3 right-3 bg-white/95 backdrop-blur text-brand-dark text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm border border-slate-100">${p.badge}</span>` : '';
 
         const card = document.createElement('div');
-        card.className = 'bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-cardHover transition-all flex flex-col group cursor-pointer';
+        card.className = 'product-card bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-cardHover transition-all flex flex-col group cursor-pointer';
         
-        // Tıklama olayını garantilemek için eventListener kullanıyoruz
+        // Karta tıklandığında modal açılmasını kesinleştiriyoruz
         card.addEventListener('click', () => {
             openModal(p);
         });
@@ -125,7 +130,7 @@ function renderProducts(filter = 'kagit') {
     });
 }
 
-// Modal (Pop-up) İşlemleri
+// MODAL AÇMA
 function openModal(product) {
     const modal = document.getElementById('product-modal');
     const backdrop = document.getElementById('modal-backdrop');
@@ -134,19 +139,23 @@ function openModal(product) {
     
     if (!modal) return;
 
-    // Fotoğrafı kocaman ekrana ver
     if (modalImage) {
         modalImage.src = product.image;
         modalImage.alt = product.title;
     }
 
-    // Metinleri Doldur
-    document.getElementById('modal-category').innerText = product.category === 'kagit' ? 'HİJYEN KAĞITLARI' : 'DİĞER';
+    const catNames = { 
+        'kagit': 'HİJYEN KAĞITLARI', 
+        'kimyasal': 'TEMİZLİK KİMYASALLARI', 
+        'sarf': 'SARF MALZEMELER', 
+        'dispenser': 'EKİPMANLAR' 
+    };
+    
+    document.getElementById('modal-category').innerText = catNames[product.category] || 'ÜRÜN';
     document.getElementById('modal-title').innerText = product.title;
     document.getElementById('modal-desc').innerText = product.desc;
     document.getElementById('modal-code').innerText = product.code;
 
-    // Rozet Kontrolü
     const badge = document.getElementById('modal-badge');
     if (product.badge) {
         badge.innerText = product.badge;
@@ -155,7 +164,6 @@ function openModal(product) {
         badge.classList.add('hidden');
     }
 
-    // Özellikleri (Specs) Ekle
     const specsUl = document.getElementById('modal-specs');
     specsUl.innerHTML = '';
     product.specs.forEach(spec => {
@@ -167,45 +175,114 @@ function openModal(product) {
         `;
     });
 
-    // WhatsApp Linkini Hazırla
     const wpBtn = document.getElementById('modal-whatsapp');
     const msg = encodeURIComponent(`Merhaba, ${product.code} kodlu "${product.title}" ürünü hakkında toptan fiyat bilgisi almak istiyorum.`);
     wpBtn.href = `https://wa.me/905001234567?text=${msg}`;
 
-    // Modal'ı Göster (Sınıfları temizle ve ekle)
+    modal.style.display = 'flex';
     modal.classList.remove('hidden');
-    modal.classList.add('flex');
     
-    // Animasyonu tetiklemek için ufak bir gecikme
     requestAnimationFrame(() => {
-        backdrop.classList.remove('opacity-0');
-        panel.classList.remove('opacity-0', 'translate-y-8', 'scale-95');
+        if (backdrop) backdrop.classList.remove('opacity-0');
+        if (panel) panel.classList.remove('opacity-0', 'translate-y-8', 'scale-95');
     });
 }
 
+// MODAL KAPATMA
 function closeModal() {
     const modal = document.getElementById('product-modal');
     const backdrop = document.getElementById('modal-backdrop');
     const panel = document.getElementById('modal-panel');
 
-    // Animasyonu geri sar
-    backdrop.classList.add('opacity-0');
-    panel.classList.add('opacity-0', 'translate-y-8', 'scale-95');
+    if (!modal) return;
+
+    if (backdrop) backdrop.classList.add('opacity-0');
+    if (panel) panel.classList.add('opacity-0', 'translate-y-8', 'scale-95');
     
-    // Animasyon bittikten sonra gizle
     setTimeout(() => {
+        modal.style.display = 'none';
         modal.classList.add('hidden');
-        modal.classList.remove('flex');
     }, 300);
 }
 
-// Olay Dinleyicileri (Sayfa Yüklenince)
+// SAYFA YÜKLENDİĞİNDE ÇALIŞACAK KISIMLAR
 document.addEventListener('DOMContentLoaded', () => {
-    renderProducts('kagit');
-    
+    // Varsayılan olarak tüm ürünleri göster
+    renderProducts('all');
+
+    // Filtre Çubuğunu Oluştur
+    const filterBar = document.getElementById('filter-bar');
+    if (filterBar) {
+        const categories = [
+            { id: 'all', name: 'Tüm Ürünler' },
+            { id: 'kagit', name: 'Hijyen Kağıtları' },
+            { id: 'kimyasal', name: 'Kimyasallar' },
+            { id: 'sarf', name: 'Sarf Malzemeler' },
+            { id: 'dispenser', name: 'Ekipmanlar' }
+        ];
+
+        filterBar.innerHTML = '';
+        categories.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `filter-chip px-4 py-2 rounded-xl text-xs font-semibold border transition-all ${cat.id === 'all' ? 'bg-brand text-white border-brand' : 'bg-white text-ink border-slate-200 hover:border-brand'}`;
+            btn.innerText = cat.name;
+            btn.setAttribute('data-category', cat.id);
+            if (cat.id === 'all') btn.setAttribute('data-active', 'true');
+
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-chip').forEach(c => {
+                    c.setAttribute('data-active', 'false');
+                    c.className = 'filter-chip px-4 py-2 rounded-xl text-xs font-semibold border bg-white text-ink border-slate-200 hover:border-brand';
+                });
+                btn.setAttribute('data-active', 'true');
+                btn.className = 'filter-chip px-4 py-2 rounded-xl text-xs font-semibold border bg-brand text-white border-brand';
+                
+                const titleEl = document.getElementById('katalog-title');
+                if (titleEl) titleEl.innerText = cat.name;
+
+                renderProducts(cat.id);
+            });
+            filterBar.appendChild(btn);
+        });
+    }
+
+    // Ana Kategoriler Butonları (Tıklayınca Kataloğa Kaydır ve Filtrele)
+    document.querySelectorAll('[data-main-category]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const cat = btn.getAttribute('data-main-category');
+            renderProducts(cat);
+            const katalog = document.getElementById('katalog');
+            if (katalog) katalog.scrollIntoView({ behavior: 'smooth' });
+            
+            document.querySelectorAll('.filter-chip').forEach(c => {
+                if (c.getAttribute('data-category') === cat) {
+                    c.click();
+                }
+            });
+        });
+    });
+
+    // Footer Kategori Linkleri
+    document.querySelectorAll('[data-footer-filter]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const cat = link.getAttribute('data-footer-filter');
+            renderProducts(cat);
+            const katalog = document.getElementById('katalog');
+            if (katalog) katalog.scrollIntoView({ behavior: 'smooth' });
+
+            document.querySelectorAll('.filter-chip').forEach(c => {
+                if (c.getAttribute('data-category') === cat) {
+                    c.click();
+                }
+            });
+        });
+    });
+
+    // Modal Kapatma Olayları
     const closeBtn = document.getElementById('modal-close');
     const backdrop = document.getElementById('modal-backdrop');
-    
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
     if (backdrop) backdrop.addEventListener('click', closeModal);
 });
