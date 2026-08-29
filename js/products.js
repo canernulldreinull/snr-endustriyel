@@ -82,7 +82,7 @@ const products = [
   }
 ];
 
-// ÜRÜNLERİ EKRANA RENDER ETME VE FİLTRELEME
+// ÜRÜNLERİ EKRANA BASMA VE FİLTRELEME
 function renderProducts(category = 'all') {
     const grid = document.getElementById('product-grid');
     const resultCount = document.getElementById('result-count');
@@ -110,7 +110,6 @@ function renderProducts(category = 'all') {
         const card = document.createElement('div');
         card.className = 'product-card bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-cardHover transition-all flex flex-col group cursor-pointer';
         
-        // Karta tıklandığında modal açılmasını kesinleştiriyoruz
         card.addEventListener('click', () => {
             openModal(p);
         });
@@ -151,7 +150,7 @@ function openModal(product) {
         'dispenser': 'EKİPMANLAR' 
     };
     
-    document.getElementById('modal-category').innerText = catNames[product.category] || 'ÜRÜN';
+    document.getElementById('modal-category').innerText = catNames[product.category] || 'HİJYEN KAĞITLARI';
     document.getElementById('modal-title').innerText = product.title;
     document.getElementById('modal-desc').innerText = product.desc;
     document.getElementById('modal-code').innerText = product.code;
@@ -168,16 +167,12 @@ function openModal(product) {
     specsUl.innerHTML = '';
     product.specs.forEach(spec => {
         specsUl.innerHTML += `
-            <li class="flex items-center justify-between py-2.5 border-b border-slate-100 last:border-0 text-sm">
+            <li class="flex items-center justify-between py-2 border-b border-slate-100 last:border-0 text-sm">
                 <span class="text-slate-500">${spec.split(':')[0]}:</span>
                 <span class="font-medium text-ink">${spec.split(':')[1] || ''}</span>
             </li>
         `;
     });
-
-    const wpBtn = document.getElementById('modal-whatsapp');
-    const msg = encodeURIComponent(`Merhaba, ${product.code} kodlu "${product.title}" ürünü hakkında toptan fiyat bilgisi almak istiyorum.`);
-    wpBtn.href = `https://wa.me/905001234567?text=${msg}`;
 
     modal.style.display = 'flex';
     modal.classList.remove('hidden');
@@ -205,12 +200,11 @@ function closeModal() {
     }, 300);
 }
 
-// SAYFA YÜKLENDİĞİNDE ÇALIŞACAK KISIMLAR
+// SAYFA YÜKLENİNCE
 document.addEventListener('DOMContentLoaded', () => {
-    // Varsayılan olarak tüm ürünleri göster
     renderProducts('all');
 
-    // Filtre Çubuğunu Oluştur
+    // Filtre Çubuğu
     const filterBar = document.getElementById('filter-bar');
     if (filterBar) {
         const categories = [
@@ -247,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Ana Kategoriler Butonları (Tıklayınca Kataloğa Kaydır ve Filtrele)
+    // Üst Kategori Kutuları
     document.querySelectorAll('[data-main-category]').forEach(btn => {
         btn.addEventListener('click', () => {
             const cat = btn.getAttribute('data-main-category');
@@ -256,9 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (katalog) katalog.scrollIntoView({ behavior: 'smooth' });
             
             document.querySelectorAll('.filter-chip').forEach(c => {
-                if (c.getAttribute('data-category') === cat) {
-                    c.click();
-                }
+                if (c.getAttribute('data-category') === cat) c.click();
             });
         });
     });
@@ -273,16 +265,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (katalog) katalog.scrollIntoView({ behavior: 'smooth' });
 
             document.querySelectorAll('.filter-chip').forEach(c => {
-                if (c.getAttribute('data-category') === cat) {
-                    c.click();
-                }
+                if (c.getAttribute('data-category') === cat) c.click();
             });
         });
     });
-
-    // Modal Kapatma Olayları
-    const closeBtn = document.getElementById('modal-close');
-    const backdrop = document.getElementById('modal-backdrop');
-    if (closeBtn) closeBtn.addEventListener('click', closeModal);
-    if (backdrop) backdrop.addEventListener('click', closeModal);
 });
