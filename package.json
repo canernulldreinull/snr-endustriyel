@@ -1,0 +1,8 @@
+{
+  "name": "snr-endustriyel",
+  "version": "1.0.0",
+  "main": "api/quote.js",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.1"
+  }
+}
