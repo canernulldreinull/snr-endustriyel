@@ -468,44 +468,41 @@
 </footer>
 
 <!-- BÜYÜK GÖRSELLİ MODAL -->
-<div id="product-modal" class="fixed inset-0 z-[100] hidden flex-col items-center justify-center p-4 sm:p-6">
-  <div id="modal-backdrop" class="absolute inset-0 bg-ink/90 backdrop-blur-sm transition-opacity duration-300 opacity-0 cursor-pointer"></div>
+<div id="product-modal" class="fixed inset-0 z-[100] hidden flex-col items-center justify-center p-4 sm:p-6" style="display: none;">
+  <div id="modal-backdrop" class="absolute inset-0 bg-ink/90 backdrop-blur-sm transition-opacity duration-300 opacity-0 cursor-pointer" onclick="closeModal()"></div>
   
   <div id="modal-panel" class="relative z-10 w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh] transition-all duration-300 opacity-0 translate-y-8 scale-95">
     
     <div class="relative w-full h-72 sm:h-[450px] bg-slate-50 border-b border-slate-200 shrink-0">
-      <img id="modal-image" src="" alt="" class="w-full h-full object-contain p-4" />
-      <button id="modal-close" type="button" class="absolute top-4 right-4 w-11 h-11 bg-white hover:bg-slate-100 text-ink rounded-full grid place-items-center shadow-lg border border-slate-200 transition-all z-20">
+      <img id="modal-image" src="" alt="" class="w-full h-full object-contain p-4 mix-blend-multiply" />
+      <button onclick="closeModal()" class="absolute top-4 right-4 w-11 h-11 bg-white hover:bg-slate-100 text-ink rounded-full grid place-items-center shadow-lg border border-slate-200 transition-all z-20">
         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
       </button>
     </div>
 
     <div class="p-6 sm:p-8 overflow-y-auto">
       <div>
-        <span id="modal-category" class="text-xs font-mono font-semibold text-brand-dark uppercase tracking-widest"></span>
+        <span id="modal-category" class="text-xs font-mono font-semibold text-brand-dark uppercase tracking-widest">HİJYEN KAĞITLARI</span>
         <h3 id="modal-title" class="font-display font-semibold text-2xl text-ink mt-1"></h3>
       </div>
-      
       <div class="mt-4 flex flex-wrap gap-2">
         <span class="text-xs bg-ink text-white rounded-lg px-3 py-1.5 font-medium tracking-wide">Kod: <span id="modal-code"></span></span>
         <span id="modal-badge" class="hidden text-xs bg-amber-50 text-amber-700 border border-amber-200 rounded-lg px-3 py-1.5 font-bold uppercase tracking-wide"></span>
       </div>
-      
       <p id="modal-desc" class="mt-5 text-sm sm:text-base text-ink-soft leading-relaxed"></p>
       <ul id="modal-specs" class="mt-6 pt-6 border-t border-slate-200 space-y-3"></ul>
     </div>
 
     <div class="p-5 sm:p-6 border-t border-slate-100 bg-base-50 shrink-0">
-      <a id="modal-whatsapp" href="#" target="_blank" class="w-full inline-flex justify-center items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-4 rounded-xl shadow-md transition-transform active:scale-[0.98] text-base">
-        <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12.04 2.003c-5.53 0-10.02 4.48-10.02 10.02 0 1.77.46 3.5 1.34 5.02L2 22l5.11-1.34a9.98 9.98 0 004.93 1.31h.01c5.53 0 10.02-4.48 10.02-10.02 0-2.68-1.04-5.2-2.93-7.09a9.96 9.96 0 00-7.1-2.94zm5.87 14.3c-.25.7-1.45 1.34-2 1.42-.51.08-1.15.11-1.86-.12-.43-.13-.98-.32-1.7-.62-2.98-1.29-4.92-4.28-5.07-4.48-.15-.2-1.22-1.62-1.22-3.09 0-1.47.77-2.19 1.05-2.49.27-.3.6-.37.8-.37.2 0 .4.002.57.01.18.008.43-.07.67.51.25.6.85 2.07.92 2.22.07.15.12.33.02.53-.1.2-.15.32-.3.5-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.3.77 1.27 1.65 2.06 1.13 1.01 2.09 1.32 2.39 1.47.3.15.47.13.65-.08.17-.2.74-.86.94-1.16.2-.3.4-.25.67-.15.27.1 1.73.82 2.02.97.3.15.5.22.57.35.07.13.07.75-.18 1.45z"/></svg>
+      <a id="modal-whatsapp" href="#" target="_blank" class="w-full inline-flex justify-center items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-4 rounded-xl shadow-md transition-transform text-base">
         <span>WhatsApp üzerinden Fiyat Al</span>
       </a>
     </div>
   </div>
 </div>
 
+<!-- TEK VE HATASIZ JS BAĞLANTISI (app.js kaldırıldı, çakışma önlendi) -->
 <script src="js/products.js"></script>
-<script src="js/app.js"></script>
 <script>
   const yearEl = document.getElementById('year');
   if (yearEl) {
