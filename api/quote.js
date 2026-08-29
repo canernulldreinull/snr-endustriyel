@@ -1,4 +1,6 @@
-const { createClient } = require('@supabase/supabase-js');
+const { Resend } = require('resend');
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -17,12 +19,7 @@ module.exports = async (req, res) => {
     return res.status(405).json({ success: false, message: 'Yalnızca POST istekleri kabul edilir.' });
   }
 
-  const supabaseUrl = (process.env.SUPABASE_URL || '').trim();
-  const supabaseKey = (process.env.SUPABASE_KEY || '').trim();
-
   try {
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
     let body = req.body;
     if (typeof body === 'string') {
       try {
@@ -33,32 +30,40 @@ module.exports = async (req, res) => {
     }
     body = body || {};
 
-    const fullName = body.name || body.fullName || 'İsimsiz';
-    const company = body.company || null;
-    const phone = body.phone || '';
-    const service = body.category || body.service || 'Genel';
-    const message = body.message || null;
+    const name = body.name || 'Belirtilmedi';
+    const company = body.company || 'Belirtilmedi';
+    const phone = body.phone || 'Belirtilmedi';
+    const category = body.category || 'Genel';
+    const message = body.message || 'Mesaj bırakılmadı.';
 
-    const { error } = await supabase
-      .from('quotes')
-      .insert([
-        {
-          full_name: fullName,
-          company: company,
-          phone: phone,
-          service: service,
-          message: message
-        }
-      ]);
+    const { data, error } = await resend.emails.send({
+      from: 'SNR Web Form <onboarding@resend.dev>',
+      to: ['ccanerr936590@gmail.com'],
+      subject: `Yeni Teklif Talebi: ${name} (${company})`,
+      html: `
+        <div style="font-family: sans-serif; padding: 20px; color: #0f172a;">
+          <h2 style="color: #0284c7;">Yeni Teklif Talebi Alındı</h2>
+          <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 15px 0;" />
+          <p><strong>Ad Soyad:</strong> ${name}</p>
+          <p><strong>Firma:</strong> ${company}</p>
+          <p><strong>Telefon:</strong> ${phone}</p>
+          <p><strong>İlgilenilen Kategori:</strong> ${category}</p>
+          <p><strong>Mesaj:</strong></p>
+          <blockquote style="background: #f8fafc; padding: 12px; border-left: 4px solid #0284c7; margin: 0;">
+            ${message}
+          </blockquote>
+        </div>
+      `
+    });
 
     if (error) {
-      console.error('Supabase Error:', error);
+      console.error('Resend Error:', error);
       return res.status(500).json({ success: false, message: error.message });
     }
 
-    return res.status(200).json({ success: true, message: 'Teklif talebiniz başarıyla alındı.' });
+    return res.status(200).json({ success: true, message: 'Teklif talebiniz başarıyla iletildi.' });
   } catch (err) {
-    console.error('Catch Error:', err);
+    console.error('Server Error:', err);
     return res.status(500).json({ success: false, message: err.message || 'Sunucu hatası oluştu.' });
   }
 };
