@@ -272,7 +272,7 @@
   </div>
 </section>
 
-  <!-- İLETİŞİM FORMU (Kurumsal & Sade Tipografi) -->
+  <!-- İLETİŞİM FORMU -->
 <section id="iletisim" class="bg-base-50 max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-16 sm:py-20 font-sans">
   <div class="grid lg:grid-cols-5 gap-10 lg:gap-14 items-start">
     
@@ -309,6 +309,85 @@
             />
           </div>
         </div>
+
+        <!-- Telefon Girişi -->
+        <div>
+          <label class="block text-xs font-semibold text-ink mb-1.5">Telefon Numarası <span class="text-rose-500">*</span></label>
+          <div class="flex rounded-xl border border-slate-200 bg-base-50/50 focus-within:bg-white focus-within:border-brand focus-within:ring-4 focus-within:ring-brand/10 transition-all overflow-hidden">
+            <select id="countryCode" name="countryCode" class="bg-transparent border-r border-slate-200 px-3 py-3 text-sm text-ink font-medium focus:outline-none cursor-pointer">
+              <option value="+90" selected>🇹🇷 +90</option>
+              <option value="+1">🇺🇸 +1</option>
+              <option value="+49">🇩🇪 +49</option>
+              <option value="+44">🇬🇧 +44</option>
+              <option value="+33">🇫🇷 +33</option>
+              <option value="+31">🇳🇱 +31</option>
+              <option value="+994">🇦🇿 +994</option>
+              <option value="+971">🇦🇪 +971</option>
+            </select>
+            <input 
+              type="tel" 
+              id="phoneInput" 
+              name="phone" 
+              maxlength="15" 
+              required 
+              class="w-full bg-transparent px-4 py-3 text-sm text-ink placeholder:text-slate-400 focus:outline-none not-italic" 
+              placeholder="5XX XXX XX XX" 
+            />
+          </div>
+        </div>
+
+        <!-- Mesaj -->
+        <div>
+          <label class="block text-xs font-semibold text-ink mb-1.5">Talep Edilen Ürünler / Mesajınız <span class="text-rose-500">*</span></label>
+          <textarea 
+            name="message" 
+            rows="4" 
+            required 
+            class="w-full rounded-xl border border-slate-200 bg-base-50/50 px-4 py-3 text-sm text-ink placeholder:text-slate-400 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 transition-all outline-none resize-none not-italic" 
+            placeholder="İhtiyaç duyduğunuz ürün çeşitleri, tahmini sarfiyat miktarı veya sormak istedikleriniz..."></textarea>
+        </div>
+
+        <!-- Buton & Durum Bildirimi -->
+        <div class="pt-2">
+          <button type="submit" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-brand hover:bg-brand-dark text-white font-semibold text-sm px-8 py-3.5 rounded-xl transition-all shadow-md shadow-brand/20 active:scale-[0.98]">
+            <span>Teklif Talebini Gönder</span>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+          </button>
+          <p id="form-success" class="hidden mt-4 text-sm p-4 rounded-xl font-medium"></p>
+        </div>
+      </form>
+    </div>
+
+    <!-- İletişim Bilgi Kutusu (Sadeleştirilmiş) -->
+    <div class="lg:col-span-2 bg-ink rounded-2xl p-8 text-white shadow-xl">
+      <span class="text-xs font-semibold tracking-wider text-brand-100 uppercase block">HIZLI İLETİŞİM</span>
+      <h3 class="font-bold text-xl text-white mt-1 tracking-tight">SNR Tedarik Merkezi</h3>
+      <p class="mt-3 text-sm text-slate-300 leading-relaxed">Kurumsal satın alma, numune talepleri ve toptan sevkiyat rotaları için merkezimizle doğrudan iletişime geçebilirsiniz.</p>
+      
+      <ul class="mt-8 space-y-6 text-sm text-slate-300">
+        <li class="flex items-start gap-3.5">
+          <div class="w-9 h-9 rounded-lg bg-white/10 grid place-items-center shrink-0 text-brand-100">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+          </div>
+          <div class="pt-0.5">
+            <span class="block text-xs text-slate-400 font-medium">Merkez &amp; Depo</span>
+            <span class="text-white font-medium">Organize Sanayi Bölgesi, İstanbul</span>
+          </div>
+        </li>
+        <li class="flex items-start gap-3.5">
+          <div class="w-9 h-9 rounded-lg bg-white/10 grid place-items-center shrink-0 text-brand-100">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+          </div>
+          <div class="pt-0.5">
+            <span class="block text-xs text-slate-400 font-medium">Kurumsal E-posta</span>
+            <a href="mailto:info@snrendustriyel.com" class="text-white font-medium hover:text-brand-100 transition-colors">info@snrendustriyel.com</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</section>
 
         <!-- Telefon Girişi -->
         <div>
