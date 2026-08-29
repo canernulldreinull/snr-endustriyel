@@ -1,10 +1,11 @@
 // ÜRÜN VERİTABANI
 const products = [
+  // --- 1. HİJYEN KAĞITLARI ---
   {
     id: "kagit-1",
     category: "kagit",
     title: "Premium Z-Katlama Havlu",
-    desc: "Yüksek emiciliğe sahip, %100 selüloz çift katlı havlu. Elde dağılma yapmaz, tüm dispenserlerle uyumludur.",
+    desc: "Yüksek emiciliğe sahip, %100 selüloz çift katlı havlu. Elde dağılma yapmaz, tüm standart dispenserlerle uyumludur.",
     code: "HK-Z200",
     badge: "Çok Satan",
     specs: ["Kat: 2 Katlı", "Yaprak: 200 Adet/Paket", "Koli İçi: 12 Paket", "Hammadde: %100 Saf Selüloz"],
@@ -27,7 +28,7 @@ const products = [
     desc: "Fotoselli dispenserler için özel üretilmiş, yüksek sarfiyatlı alanlara uygun uzun metrajlı, dayanıklı rulo havlu.",
     code: "HK-SM21",
     badge: "Ekonomik",
-    specs: ["Genişlik: 21 cm", "Uzunluk: 150 Metre", "Koli İçi: 6 Rulo", "Uyum: Tüm markalarla uyumlu"],
+    specs: ["Genişlik: 21 cm", "Uzunluk: 150 Metre", "Koli İçi: 6 Rulo", "Uyum: Tüm fotoselli cihazlar"],
     image: "img/kagit-3.jpg"
   },
   {
@@ -79,6 +80,162 @@ const products = [
     badge: "Yeni",
     specs: ["Genişlik: 50 cm", "Uzunluk: 50 Metre", "Koli İçi: 12 Rulo", "Yapı: Çift katlı (Kağıt + PE Film)"],
     image: "img/kagit-8.jpg"
+  },
+
+  // --- 2. TEMİZLİK KİMYASALLARI ---
+  {
+    id: "kimyasal-1",
+    category: "kimyasal",
+    title: "Endüstriyel Ultra Kıvamlı Çamaşır Suyu",
+    desc: "Geniş yüzeyler, zeminler ve sıhhi alanlar için yoğun formüllü, maksimum hijyen sağlayan klor bazlı ağartıcı.",
+    code: "KM-CS20",
+    badge: "Çok Satan",
+    specs: ["Hacim: 20 Litre", "Formül: Yoğun Kıvamlı Klor", "pH Değeri: 12 - 13", "Kullanım: Seyreltilerek uygulanır"],
+    image: "https://images.unsplash.com/photo-1584813470613-5b1c1cad3d69?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "kimyasal-2",
+    category: "kimyasal",
+    title: "Ağır Kir ve Yağ Sökücü",
+    desc: "Endüstriyel mutfaklar, fırınlar, ızgaralar ve zeminlerdeki yanmış, donmuş yağları hızla çözen alkali temizleyici.",
+    code: "KM-YS05",
+    badge: "Güçlü Formül",
+    specs: ["Hacim: 5 Litre", "Koli İçi: 4 Adet", "pH Değeri: 13 - 14", "Uygulama: Mutfak, Fırın, Davlumbaz"],
+    image: "https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "kimyasal-3",
+    category: "kimyasal",
+    title: "Genel Yüzey Temizleyici (Lavanta / Çam)",
+    desc: "Mermer, fayans, seramik ve granit zeminlerde leke bırakmadan parlaklık sağlayan kalıcı kokulu yüzey deterjanı.",
+    code: "KM-YT20",
+    badge: "",
+    specs: ["Hacim: 20 Litre", "Koku: Lavanta Esanslı", "Özellik: Durulama gerektirmez", "pH Değeri: Nötr (6.5 - 7.5)"],
+    image: "https://images.unsplash.com/photo-1528740561666-dc2479dc08ab?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "kimyasal-4",
+    category: "kimyasal",
+    title: "Antibakteriyel Köpük El Sabunu Kartuşu",
+    desc: "Cildi kurutmayan nemlendirici formüllü, yüksek tasarruf sağlayan lüks köpük sabun dolum solüsyonu.",
+    code: "KM-KS05",
+    badge: "Ekonomik",
+    specs: ["Hacim: 5 Litre", "Koli İçi: 4 Adet", "Özellik: Gliserin katkılı, E vitamini", "Sarfiyat: Sıvı sabuna göre %50 tasarruf"],
+    image: "https://images.unsplash.com/photo-1608248597359-bb5839218d6e?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "kimyasal-5",
+    category: "kimyasal",
+    title: "Sanayi Tipi Otomat Zemin Yıkama Sıvısı",
+    desc: "Binicili ve itmeli zemin yıkama makinelerinde köpürme yapmayan, fabrikalar ve depolar için geliştirilmiş zemin sıvısı.",
+    code: "KM-ZY20",
+    badge: "Endüstriyel",
+    specs: ["Hacim: 20 Litre", "Özellik: Köpüksüz formül", "Kullanım: Zemin yıkama otomatları", "Etki: Ağır forklift izlerini söker"],
+    image: "https://images.unsplash.com/photo-1584813470613-5b1c1cad3d69?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "kimyasal-6",
+    category: "kimyasal",
+    title: "Kireç ve Pas Sökücü Asidik Temizleyici",
+    desc: "Kireç bağlamış lavabo, klozet, batarya ve fayans aralarını aşındırmadan temizleyen güçlü mineral çözücü.",
+    code: "KM-KP05",
+    badge: "",
+    specs: ["Hacim: 5 Litre", "Koli İçi: 4 Adet", "pH: 1 - 2 (Asidik)", "Kullanım: Islak hacimler ve inşaat sonrası"],
+    image: "https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?auto=format&fit=crop&w=600&q=80"
+  },
+
+  // --- 3. SARF MALZEMELER ---
+  {
+    id: "sarf-1",
+    category: "sarf",
+    title: "Endüstriyel Battal Boy Çöp Torbası (80x110)",
+    desc: "Geri dönüştürülebilir dayanıklı polietilen hammaddeden üretilmiş, tabandan sızdırmaz kaynaklı çöp poşeti.",
+    code: "SR-CP80",
+    badge: "Çok Satan",
+    specs: ["Ölçü: 80 x 110 cm (Battal)", "Paket İçi: 10 Rulo (100 Adet)", "Koli Ağırlığı: 8 kg", "Renk: Siyah"],
+    image: "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "sarf-2",
+    category: "sarf",
+    title: "Hantal / Konteyner Çöp Torbası (100x120)",
+    desc: "Ağır sanayi atıkları, bahçe ve inşaat molozları için ekstra kalın mukavemete sahip endüstriyel torba.",
+    code: "SR-CP100",
+    badge: "Ekstra Kalın",
+    specs: ["Ölçü: 100 x 120 cm (Hantal)", "Mikron: 70 Mikron (Ağır Hizmet)", "Koli İçi: 100 Adet", "Özellik: Yırtılma dirençli"],
+    image: "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "sarf-3",
+    category: "sarf",
+    title: "Mikrofiber Temizlik Bezi (40x40 cm - 5 Renk)",
+    desc: "Toz ve suyu iz bırakmadan hapseden, çamaşır makinesinde yıkanabilir kurumsal renk kodlu mikrofiber bezler.",
+    code: "SR-MB40",
+    badge: "Renkli Kodlama",
+    specs: ["Ölçü: 40 x 40 cm", "Ağırlık: 300 GSM", "Paket İçi: 10'lu Paket", "Renkler: Mavi, Kırmızı, Sarı, Yeşil, Beyaz"],
+    image: "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "sarf-4",
+    category: "sarf",
+    title: "Pudra Seviyesi Sıfır Nitril Muayene Eldiveni",
+    desc: "Gıda üretimi, temizlik ve medikal kullanıma uygun, lateks içermeyen alerji yapmaz mavi nitril eldiven.",
+    code: "SR-NE100",
+    badge: "Gıda Uyumlu",
+    specs: ["Beden: S / M / L / XL", "Kutu İçi: 100 Adet", "Koli İçi: 10 Kutu (1000 Adet)", "Malzeme: %100 Nitril"],
+    image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "sarf-5",
+    category: "sarf",
+    title: "Endüstriyel Islak Mop Paspas (350 gr)",
+    desc: "Yüksek su emiciliğine sahip pamuk/polyester karışımlı iplikten üretilmiş vidalı ve geçmeli paspas ucu.",
+    code: "SR-MP350",
+    badge: "",
+    specs: ["Ağırlık: 350 Gram", "İplik: %70 Pamuk, %30 Sentetik", "Koli İçi: 25 Adet", "Uyum: Standart mop aparatları"],
+    image: "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?auto=format&fit=crop&w=600&q=80"
+  },
+
+  // --- 4. EKİPMANLAR & DİSPENSERLER ---
+  {
+    id: "dispenser-1",
+    category: "dispenser",
+    title: "Sensörlü Fotoselli Kağıt Havlu Dispenseri",
+    desc: "Pilli veya adaptörlü çalışabilen, yaprak boyu ayarlanabilir hijyenik temassız otomatik havlu makinesi.",
+    code: "EK-FH01",
+    badge: "Çok Satan",
+    specs: ["Çalışma: 4x D Boy Pil / 220V Adaptör", "Rulo Genişliği: 21 cm", "Kasa: Darbeye dayanıklı ABS", "Garanti: 2 Yıl"],
+    image: "https://images.unsplash.com/photo-1584634731339-252c581abfc5?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "dispenser-2",
+    category: "dispenser",
+    title: "Çift Kovalı Presli Temizlik Arabası (25L + 25L)",
+    desc: "Temiz ve kirli suyu ayıran çift kovalı, ergonomik dikey presli, tekerlekli profesyonel kat arabası.",
+    code: "EK-CA50",
+    badge: "Sağlam Kasa",
+    specs: ["Kapasite: 2 x 25 Litre (50L Toplam)", "Gövde: Paslanmaz Çelik Şasi + ABS Kova", "Pres: Ağır hizmet dikey sıkma", "Teker: 360° Döner Sessiz Kauçuk"],
+    image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "dispenser-3",
+    category: "dispenser",
+    title: "Paslanmaz Krom Z-Katlama Havluluk",
+    desc: "304 kalite mat paslanmaz çelikten üretilmiş, kilit mekanizmalı şık ve dayanıklı Z-havlu dispenseri.",
+    code: "EK-ZH304",
+    badge: "Inox Paslanmaz",
+    specs: ["Malzeme: 304 Kalite Mat Paslanmaz Çelik", "Kapasite: 400 Yaprak", "Kilit: Anahtarlı emniyet kilidi", "Montaj: Duvara monte vida kiti dahil"],
+    image: "https://images.unsplash.com/photo-1584634731339-252c581abfc5?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "dispenser-4",
+    category: "dispenser",
+    title: "Otomatik Sensörlü Sıvı / Dezenfektan Dispenseri",
+    desc: "Giriş alanları, yemekhaneler ve tuvaletler için temassız pilli sıvı sabun ve jel dezenfektan makinesi.",
+    code: "EK-SD10",
+    badge: "Temassız",
+    specs: ["Hacim: 1000 ml Hazne", "Sensör Mesafesi: 5 - 10 cm", "Dozaj: 1 ml / Basım", "Çalışma: 4 Adet AA Kalem Pil"],
+    image: "https://images.unsplash.com/photo-1584634731339-252c581abfc5?auto=format&fit=crop&w=600&q=80"
   }
 ];
 
@@ -147,10 +304,10 @@ function openModal(product) {
         'kagit': 'HİJYEN KAĞITLARI', 
         'kimyasal': 'TEMİZLİK KİMYASALLARI', 
         'sarf': 'SARF MALZEMELER', 
-        'dispenser': 'EKİPMANLAR' 
+        'dispenser': 'EKİPMANLAR & DİSPENSERLER' 
     };
     
-    document.getElementById('modal-category').innerText = catNames[product.category] || 'HİJYEN KAĞITLARI';
+    document.getElementById('modal-category').innerText = catNames[product.category] || 'ÜRÜN DETAYI';
     document.getElementById('modal-title').innerText = product.title;
     document.getElementById('modal-desc').innerText = product.desc;
     document.getElementById('modal-code').innerText = product.code;
