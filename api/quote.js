@@ -24,9 +24,7 @@ module.exports = async (req, res) => {
   try {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Gelen veriyi her formatta güvenle parse etme
     let payload = req.body;
-
     if (typeof payload === 'string') {
       try {
         payload = JSON.parse(payload);
@@ -44,19 +42,19 @@ module.exports = async (req, res) => {
 
     payload = payload || {};
 
-    const fullName = payload.fullName || payload.full_name || payload.name || payload.adsoyad || payload['full-name'] || '';
-    const email = payload.email || payload.eposta || payload.mail || '';
-    const phone = payload.phone || payload.telefon || payload.tel || '';
-    const company = payload.company || payload.firma || payload.sirket || null;
-    const service = payload.service || payload.hizmet || payload.urun || 'Genel';
-    const message = payload.message || payload.mesaj || payload.not || null;
+    const fullName = payload.fullName || payload.full_name || payload.name || payload.adsoyad || 'İsimsiz';
+    const email = payload.email || payload.eposta || payload.mail || 'eposta@bilgi.com';
+    const phone = payload.phone || payload.telefon || '';
+    const company = payload.company || payload.firma || null;
+    const service = payload.service || payload.hizmet || 'Genel';
+    const message = payload.message || payload.mesaj || null;
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('quotes')
       .insert([
         {
-          full_name: fullName || 'İsimsiz Gönderi',
-          email: email || 'eposta-yok@bilgi.com',
+          full_name: fullName,
+          email: email,
           phone: phone,
           company: company,
           service: service,
@@ -65,11 +63,19 @@ module.exports = async (req, res) => {
       ]);
 
     if (error) {
-      return res.status(500).json({ success: false, message: error.message });
+      console.error('SUPABASE DB ERROR:', error);
+      return res.status(500).json({ 
+        success: false, 
+        message: `Supabase Hatası: ${error.message} (Kod: ${error.code})` 
+      });
     }
 
     return res.status(200).json({ success: true, message: 'Teklif talebiniz başarıyla alındı.' });
   } catch (err) {
-    return res.status(500).json({ success: false, message: err.message || 'Sunucu hatası oluştu.' });
+    console.error('SERVER CATCH ERROR:', err);
+    return res.status(500).json({ 
+      success: false, 
+      message: `Sunucu Hatası: ${err.message}` 
+    });
   }
 };
