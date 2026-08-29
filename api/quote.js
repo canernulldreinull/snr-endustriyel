@@ -38,7 +38,6 @@ module.exports = async (req, res) => {
     const phone = body.phone || '';
     const service = body.category || body.service || 'Genel';
     const message = body.message || null;
-    const email = body.email || `${phone.replace(/\D/g, '') || 'teklif'}@snrendustriyel.com`;
 
     const { error } = await supabase
       .from('quotes')
@@ -48,8 +47,7 @@ module.exports = async (req, res) => {
           company: company,
           phone: phone,
           service: service,
-          message: message,
-          email: email
+          message: message
         }
       ]);
 
