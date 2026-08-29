@@ -1,6 +1,7 @@
 const { createClient } = require('@supabase/supabase-js');
 
 module.exports = async (req, res) => {
+  // CORS Başlıkları
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -17,27 +18,23 @@ module.exports = async (req, res) => {
     return res.status(405).json({ success: false, message: 'Yalnızca POST istekleri kabul edilir.' });
   }
 
-  const supabaseUrl = (process.env.SUPABASE_URL || '').trim();
-  const supabaseKey = (process.env.SUPABASE_KEY || '').trim();
+  // Ortam değişkenlerini oku ve temizle
+  const rawUrl = process.env.SUPABASE_URL || '';
+  const rawKey = process.env.SUPABASE_KEY || '';
 
-  if (!supabaseUrl || !supabaseKey) {
-    return res.status(500).json({ 
-      success: false, 
-      message: 'Supabase ortam değişkenleri eksik veya okunamadı.' 
-    });
-  }
+  const supabaseUrl = rawUrl.replace(/[\n\r\t]/g, '').trim();
+  const supabaseKey = rawKey.replace(/[\n\r\t]/g, '').trim();
 
-  let supabase;
-  try {
-    supabase = createClient(supabaseUrl, supabaseKey);
-  } catch (clientErr) {
-    return res.status(500).json({ 
-      success: false, 
-      message: `Supabase bağlantı hatası: ${clientErr.message}` 
+  if (!supabaseUrl.startsWith('http://') && !supabaseUrl.startsWith('https://')) {
+    return res.status(500).json({
+      success: false,
+      message: `Geçersiz SUPABASE_URL: "${supabaseUrl}". Lütfen Vercel panelindeki SUPABASE_URL değerini kontrol edin.`
     });
   }
 
   try {
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
     const { fullName, email, phone, company, service, message } = req.body || {};
 
     if (!fullName || !email || !phone || !service) {
