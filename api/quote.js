@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
   const apiKey = (process.env.RESEND_API_KEY || '').trim();
 
   if (!apiKey) {
-    return res.status(500).json({ success: false, message: 'RESEND_API_KEY ortam değişkeni eksik.' });
+    return res.status(500).json({ success: false, message: 'RESEND_API_KEY ortam değişkeni bulunamadı.' });
   }
 
   try {
@@ -33,7 +33,7 @@ module.exports = async (req, res) => {
     body = body || {};
 
     const name = body.name || 'Belirtilmedi';
-    const company = body.company || 'Belirtilmedi';
+    const email = body.email || 'Belirtilmedi';
     const phone = body.phone || 'Belirtilmedi';
     const category = body.category || 'Genel';
     const message = body.message || 'Mesaj bırakılmadı.';
@@ -47,19 +47,19 @@ module.exports = async (req, res) => {
       body: JSON.stringify({
         from: 'SNR Web Form <onboarding@resend.dev>',
         to: ['ccanerr936590@gmail.com'],
-        subject: `Yeni Teklif Talebi: ${name} (${company})`,
+        subject: `Yeni Teklif Talebi: ${name}`,
         html: `
-          <div style="font-family: sans-serif; padding: 20px; color: #0f172a;">
-            <h2 style="color: #0284c7;">Yeni Teklif Talebi Alındı</h2>
-            <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 15px 0;" />
-            <p><strong>Ad Soyad:</strong> ${name}</p>
-            <p><strong>Firma:</strong> ${company}</p>
-            <p><strong>Telefon:</strong> ${phone}</p>
-            <p><strong>İlgilenilen Kategori:</strong> ${category}</p>
-            <p><strong>Mesaj:</strong></p>
-            <blockquote style="background: #f8fafc; padding: 12px; border-left: 4px solid #0284c7; margin: 0;">
+          <div style="font-family: Arial, sans-serif; padding: 24px; color: #0f172a; max-width: 600px; border: 1px solid #e2e8f0; border-radius: 12px; line-height: 1.6;">
+            <h2 style="color: #0284c7; margin-top: 0; margin-bottom: 8px;">Yeni Teklif Talebi Alındı</h2>
+            <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 16px 0;" />
+            <p style="margin: 6px 0;"><strong>Ad Soyad:</strong> ${name}</p>
+            <p style="margin: 6px 0;"><strong>E-posta:</strong> <a href="mailto:${email}" style="color: #0284c7;">${email}</a></p>
+            <p style="margin: 6px 0;"><strong>Telefon:</strong> ${phone}</p>
+            <p style="margin: 6px 0;"><strong>İlgilenilen Kategori:</strong> ${category}</p>
+            <p style="margin: 12px 0 6px 0;"><strong>Mesaj:</strong></p>
+            <div style="background: #f8fafc; padding: 14px; border-left: 4px solid #0284c7; border-radius: 4px; font-size: 14px;">
               ${message}
-            </blockquote>
+            </div>
           </div>
         `
       })

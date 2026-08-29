@@ -59,7 +59,7 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div id="header-container" class="flex items-center justify-between h-20 sm:h-24 transition-all duration-300">
       
-      <!-- Logo -->
+      <!-- Sola Yaklaştırılmış ve Büyütülmüş Logo -->
       <a href="#top" class="flex items-center shrink-0 -ml-1 sm:ml-0 py-2" aria-label="SNR Endüstriyel Anasayfa">
         <img id="main-logo" src="img/logo.png" alt="SNR Endüstriyel Logo" class="h-14 sm:h-20 w-auto object-contain max-h-full transition-all duration-300" />
       </a>
@@ -74,7 +74,6 @@
 
       <!-- Sağ Aksiyonlar -->
       <div class="flex items-center gap-2.5 sm:gap-4">
-        
         <a href="https://wa.me/905001234567?text=Merhaba%2C%20fiyat%20teklifi%20almak%20istiyorum." 
            target="_blank" 
            class="inline-flex lg:hidden items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm active:scale-95 transition-transform">
@@ -279,26 +278,80 @@
     <div class="lg:col-span-3">
       <h2 class="font-display font-semibold text-2xl sm:text-3xl text-ink">Size özel teklifi hazırlayalım</h2>
       <p class="mt-3 text-ink-soft">Formu doldurun, ekibimiz en kısa sürede dönüş yapsın.</p>
-      <form id="quote-form" class="mt-8 grid sm:grid-cols-2 gap-4">
-        <div class="sm:col-span-1"><input type="text" name="name" required class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-brand" placeholder="Ad Soyad" /></div>
-        <div class="sm:col-span-1"><input type="text" name="company" class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-brand" placeholder="Firma Adı" /></div>
-        <div class="sm:col-span-1"><input type="tel" name="phone" required class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-brand" placeholder="Telefon" /></div>
+      
+      <form id="quote-form" class="mt-8 grid sm:grid-cols-2 gap-4" novalidate>
+        <!-- Ad Soyad (Max 25 Karakter, Otomatik Baş Harfler Büyük) -->
         <div class="sm:col-span-1">
-          <select name="category" required class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-brand">
+          <input 
+            type="text" 
+            id="fullNameInput" 
+            name="name" 
+            maxlength="25" 
+            required 
+            class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-brand capitalize" 
+            placeholder="Ad Soyad" 
+          />
+        </div>
+
+        <!-- E-posta (Geçerli Format Kontrolü) -->
+        <div class="sm:col-span-1">
+          <input 
+            type="email" 
+            id="emailInput" 
+            name="email" 
+            required 
+            class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-brand" 
+            placeholder="E-posta Adresiniz (örn: isim@gmail.com)" 
+          />
+        </div>
+
+        <!-- Telefon (Ülke Kodu Seçimi + Otomatik Baş Sıfır Temizleme) -->
+        <div class="sm:col-span-1 flex gap-2">
+          <select id="countryCode" name="countryCode" class="w-28 rounded-lg border border-slate-300 px-2.5 py-2.5 text-sm focus:border-brand bg-white font-mono shrink-0">
+            <option value="+90" selected>🇹🇷 +90</option>
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+49">🇩🇪 +49</option>
+            <option value="+44">🇬🇧 +44</option>
+            <option value="+33">🇫🇷 +33</option>
+            <option value="+31">🇳🇱 +31</option>
+            <option value="+994">🇦🇿 +994</option>
+            <option value="+971">🇦🇪 +971</option>
+          </select>
+          <input 
+            type="tel" 
+            id="phoneInput" 
+            name="phone" 
+            maxlength="15" 
+            required 
+            class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-brand" 
+            placeholder="5XX XXX XX XX" 
+          />
+        </div>
+
+        <!-- Kategori -->
+        <div class="sm:col-span-1">
+          <select name="category" required class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-brand bg-white">
             <option value="">İlgilenilen Kategori</option>
-            <option value="kagit">Hijyen Kağıtları</option>
-            <option value="kimyasal">Kimyasallar</option>
-            <option value="sarf">Sarf Malzemeleri</option>
-            <option value="dispenser">Dispenser &amp; Ekipman</option>
+            <option value="Hijyen Kağıtları">Hijyen Kağıtları</option>
+            <option value="Kimyasallar">Kimyasallar</option>
+            <option value="Sarf Malzemeleri">Sarf Malzemeleri</option>
+            <option value="Dispenser & Ekipman">Dispenser &amp; Ekipman</option>
           </select>
         </div>
-        <div class="sm:col-span-2"><textarea name="message" rows="4" required class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-brand" placeholder="Mesajınız..."></textarea></div>
+
+        <!-- Mesaj -->
         <div class="sm:col-span-2">
-          <button type="submit" class="w-full sm:w-auto bg-brand text-white font-semibold text-sm px-6 py-3.5 rounded-lg hover:bg-brand-dark transition-colors">Teklif Gönder</button>
+          <textarea name="message" rows="4" required class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-brand" placeholder="Talebiniz veya ürün detayları..."></textarea>
+        </div>
+
+        <!-- Buton & Geri Bildirim -->
+        <div class="sm:col-span-2">
+          <button type="submit" class="w-full sm:w-auto bg-brand hover:bg-brand-dark text-white font-semibold text-sm px-6 py-3.5 rounded-lg transition-colors">Teklif Gönder</button>
           <p id="form-success" class="hidden mt-3 text-sm p-3 rounded-lg"></p>
         </div>
       </form>
     </div>
+
     <div class="lg:col-span-2 bg-ink rounded-2xl p-7 text-white shadow-xl">
       <h3 class="font-display font-semibold text-lg">İletişim Bilgileri</h3>
       <ul class="mt-6 space-y-5 text-sm text-slate-300">
@@ -402,9 +455,31 @@
     yearEl.innerText = new Date().getFullYear();
   }
 
-  // Teklif Formu Gönderim Mantığı
+  // Teklif Formu Gönderim & Doğrulama Mantığı
   const form = document.getElementById('quote-form');
   const formMsg = document.getElementById('form-success');
+  const nameInput = document.getElementById('fullNameInput');
+  const phoneInput = document.getElementById('phoneInput');
+
+  // Ad Soyad: Kelimelerin ilk harflerini otomatik büyüt
+  if (nameInput) {
+    nameInput.addEventListener('input', (e) => {
+      let words = e.target.value.toLocaleLowerCase('tr-TR').split(' ');
+      words = words.map(w => w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1));
+      e.target.value = words.join(' ');
+    });
+  }
+
+  // Telefon: Sadece rakam kabul et ve başa 0 yazarsa otomatik sil
+  if (phoneInput) {
+    phoneInput.addEventListener('input', (e) => {
+      let val = e.target.value.replace(/\D/g, '');
+      if (val.startsWith('0')) {
+        val = val.substring(1);
+      }
+      e.target.value = val;
+    });
+  }
 
   if (form) {
     form.addEventListener('submit', async (e) => {
@@ -412,8 +487,6 @@
 
       const submitBtn = form.querySelector('button[type="submit"]');
       const originalText = submitBtn.innerText;
-      submitBtn.disabled = true;
-      submitBtn.innerText = 'Gönderiliyor...';
 
       if (formMsg) {
         formMsg.className = 'mt-3 text-sm p-3 rounded-lg hidden';
@@ -421,13 +494,39 @@
       }
 
       const formData = new FormData(form);
-      const data = {
-        name: formData.get('name'),
-        company: formData.get('company'),
-        phone: formData.get('phone'),
-        category: formData.get('category'),
-        message: formData.get('message')
-      };
+      const name = (formData.get('name') || '').trim();
+      const email = (formData.get('email') || '').trim();
+      const countryCode = formData.get('countryCode') || '+90';
+      const rawPhone = (formData.get('phone') || '').trim();
+      const category = formData.get('category');
+      const message = (formData.get('message') || '').trim();
+
+      // 1. Boş Alan Doğrulaması
+      if (!name || !email || !rawPhone || !category || !message) {
+        formMsg.innerText = 'Lütfen formdaki tüm alanları eksiksiz doldurunuz.';
+        formMsg.className = 'mt-3 text-sm p-3 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 block';
+        return;
+      }
+
+      // 2. E-posta Format Kontrolü (Spam engelleme & alan adı zorunluluğu)
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailRegex.test(email)) {
+        formMsg.innerText = 'Lütfen geçerli bir e-posta adresi giriniz (örn: isim@gmail.com).';
+        formMsg.className = 'mt-3 text-sm p-3 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 block';
+        return;
+      }
+
+      // 3. Telefon Uzunluk Kontrolü
+      if (rawPhone.length < 9) {
+        formMsg.innerText = 'Lütfen geçerli bir telefon numarası giriniz.';
+        formMsg.className = 'mt-3 text-sm p-3 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 block';
+        return;
+      }
+
+      const fullPhone = `${countryCode} ${rawPhone}`;
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Gönderiliyor...';
 
       try {
         const res = await fetch('/api/quote', {
@@ -436,7 +535,13 @@
             'Content-Type': 'application/json',
             'Accept': 'application/json'
           },
-          body: JSON.stringify(data)
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            phone: fullPhone,
+            category: category,
+            message: message
+          })
         });
 
         let result = {};
@@ -455,14 +560,13 @@
           }
         } else {
           if (formMsg) {
-            formMsg.innerText = 'Hata (' + res.status + '): ' + (result.message || 'Gönderim başarısız.');
+            formMsg.innerText = 'Hata: ' + (result.message || 'Gönderim başarısız.');
             formMsg.className = 'mt-3 text-sm p-3 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 block';
           }
         }
       } catch (err) {
-        console.error('Fetch Hatası:', err);
         if (formMsg) {
-          formMsg.innerText = 'İletişim Hatası: ' + err.message;
+          formMsg.innerText = 'İletişim hatası oluştu. Lütfen tekrar deneyin.';
           formMsg.className = 'mt-3 text-sm p-3 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 block';
         }
       } finally {
