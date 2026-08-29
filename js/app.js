@@ -1,240 +1,401 @@
-/**
- * js/app.js
- * SNR Endüstriyel - Dinamik Görünüm ve Uygulama Mantığı
- */
-document.addEventListener("DOMContentLoaded", () => {
-  // Mobil Menü
-  const menuToggle = document.getElementById("menu-toggle");
-  const mobileMenu = document.getElementById("mobile-menu");
-  menuToggle?.addEventListener("click", () => mobileMenu.classList.toggle("open"));
-  document.querySelectorAll(".mobile-link").forEach(link => {
-    link.addEventListener("click", () => mobileMenu.classList.remove("open"));
-  });
+// ÜRÜN VERİTABANI
+const products = [
+  // ==========================================
+  // 1. HİJYEN KAĞITLARI (img/kagit-1.jpg ... kagit-8.jpg)
+  // ==========================================
+  {
+    id: "kagit-1",
+    category: "kagit",
+    title: "Premium Z-Katlama Havlu",
+    desc: "Yüksek emiciliğe sahip, %100 selüloz çift katlı havlu. Elde dağılma yapmaz, tüm standart dispenserlerle uyumludur.",
+    code: "HK-Z200",
+    badge: "Çok Satan",
+    specs: ["Kat: 2 Katlı", "Yaprak: 200 Adet/Paket", "Koli İçi: 12 Paket", "Hammadde: %100 Saf Selüloz"],
+    image: "img/kagit-1.jpg"
+  },
+  {
+    id: "kagit-2",
+    category: "kagit",
+    title: "Kurumsal Tuvalet Kağıdı",
+    desc: "Otel, restoran ve ofisler için ideal, yumuşak dokulu ve suda kolay çözünen standart rulo tuvalet kağıdı.",
+    code: "HK-TK72",
+    badge: "",
+    specs: ["Kat: 2 Katlı", "Rulo Uzunluğu: 17 Metre", "Koli İçi: 72 Rulo", "Özellik: Suda çabuk erir"],
+    image: "img/kagit-2.jpg"
+  },
+  {
+    id: "kagit-3",
+    category: "kagit",
+    title: "Sensörlü Makine Havlusu",
+    desc: "Fotoselli dispenserler için özel üretilmiş, yüksek sarfiyatlı alanlara uygun uzun metrajlı, dayanıklı rulo havlu.",
+    code: "HK-SM21",
+    badge: "Ekonomik",
+    specs: ["Genişlik: 21 cm", "Uzunluk: 150 Metre", "Koli İçi: 6 Rulo", "Uyum: Tüm fotoselli cihazlar"],
+    image: "img/kagit-3.jpg"
+  },
+  {
+    id: "kagit-4",
+    category: "kagit",
+    title: "İçten Çekmeli Rulo Havlu",
+    desc: "Mutfak, atölye ve üretim alanlarında pratik kullanım sağlayan, ortadan çekmeli endüstriyel kağıt havlu.",
+    code: "HK-IC06",
+    badge: "",
+    specs: ["Kat: 2 Katlı", "Ağırlık: 1.2 kg / Rulo", "Koli İçi: 6 Rulo", "Kullanım: Merkezi çekim"],
+    image: "img/kagit-4.jpg"
+  },
+  {
+    id: "kagit-5",
+    category: "kagit",
+    title: "Mini Jumbo Tuvalet Kağıdı",
+    desc: "AVM, hastane ve restoran tuvaletleri için tasarlanmış, sık değiştirme gerektirmeyen büyük boy tasarruflu rulo.",
+    code: "HK-MJ12",
+    badge: "",
+    specs: ["Kat: 2 Katlı", "Uzunluk: 130 Metre", "Koli İçi: 12 Rulo", "Kullanım: Jumbo Dispenser"],
+    image: "img/kagit-5.jpg"
+  },
+  {
+    id: "kagit-6",
+    category: "kagit",
+    title: "Endüstriyel Kağıt Bobin",
+    desc: "Fabrikalar, oto servisleri ve sanayi tesisleri için yüksek sıvı ve yağ emici güçte ağır hizmet kağıt bobini.",
+    code: "HK-EB02",
+    badge: "Ağır Hizmet",
+    specs: ["Kat: 2 Katlı (Laminasyonlu)", "Ağırlık: 4.5 kg / Bobin", "Koli İçi: 2 Bobin", "Emicilik: Ultra Yüksek"],
+    image: "img/kagit-6.jpg"
+  },
+  {
+    id: "kagit-7",
+    category: "kagit",
+    title: "Kare Masa Peçetesi (30x30)",
+    desc: "Yemekhane, kafe ve restoranlar için ideal, ekonomik tek katlı masa peçetesi. Saf beyaz ve toz bırakmayan yapı.",
+    code: "HK-P30",
+    badge: "",
+    specs: ["Boyut: 30x30 cm", "Kat: Tek Katlı", "Paket: 100 Adet", "Koli İçi: 32 Paket"],
+    image: "img/kagit-7.jpg"
+  },
+  {
+    id: "kagit-8",
+    category: "kagit",
+    title: "Muayene Masa Örtüsü",
+    desc: "Klinik, hastane ve güzellik merkezleri için perforeli, sıvı geçirmez ve ekstra hijyenik hasta altı masa örtüsü.",
+    code: "HK-MM01",
+    badge: "Yeni",
+    specs: ["Genişlik: 50 cm", "Uzunluk: 50 Metre", "Koli İçi: 12 Rulo", "Yapı: Çift katlı (Kağıt + PE Film)"],
+    image: "img/kagit-8.jpg"
+  },
 
-  // Filtreler ve Ürün Yönetimi
-  const katalogSection = document.getElementById("katalog");
-  const filterBar = document.getElementById("filter-bar");
-  const productGrid = document.getElementById("product-grid");
-  const resultCount = document.getElementById("result-count");
-  const katalogTitle = document.getElementById("katalog-title");
-  let currentFilter = "all";
+  // ==========================================
+  // 2. TEMİZLİK KİMYASALLARI (img/kimyasal-1.jpg ... kimyasal-4.jpg)
+  // ==========================================
+  {
+    id: "kimyasal-1",
+    category: "kimyasal",
+    title: "Ultra Kıvamlı Çamaşır Suyu (20L)",
+    desc: "Geniş yüzeyler, zeminler ve sıhhi alanlar için yoğun formüllü, maksimum hijyen sağlayan klor bazlı ağartıcı.",
+    code: "KM-CS20",
+    badge: "Çok Satan",
+    specs: ["Hacim: 20 Litre", "Formül: Yoğun Kıvamlı Klor", "pH Değeri: 12 - 13", "Kullanım: Seyreltilerek uygulanır"],
+    image: "img/kimyasal-1.jpg"
+  },
+  {
+    id: "kimyasal-2",
+    category: "kimyasal",
+    title: "Endüstriyel Yağ ve Kir Sökücü (5L)",
+    desc: "Mutfaklar, fırınlar, ızgaralar ve zeminlerdeki yanmış yağları hızla çözen alkali temizleyici.",
+    code: "KM-YS05",
+    badge: "Güçlü Formül",
+    specs: ["Hacim: 5 Litre", "Koli İçi: 4 Adet", "pH Değeri: 13 - 14", "Uygulama: Mutfak, Fırın, Davlumbaz"],
+    image: "img/kimyasal-2.jpg"
+  },
+  {
+    id: "kimyasal-3",
+    category: "kimyasal",
+    title: "Parfümlü Yüzey Temizleyici (20L)",
+    desc: "Mermer, fayans ve seramik zeminlerde iz bırakmadan parlaklık sağlayan kalıcı kokulu yüzey deterjanı.",
+    code: "KM-YT20",
+    badge: "",
+    specs: ["Hacim: 20 Litre", "Koku: Lavanta Esanslı", "Özellik: Durulama gerektirmez", "pH Değeri: Nötr (6.5 - 7.5)"],
+    image: "img/kimyasal-3.jpg"
+  },
+  {
+    id: "kimyasal-4",
+    category: "kimyasal",
+    title: "Antibakteriyel Köpük Sabun (5L)",
+    desc: "Cildi kurutmayan nemlendirici formüllü, yüksek sarfiyat tasarrufu sağlayan köpük el sabunu.",
+    code: "KM-KS05",
+    badge: "Ekonomik",
+    specs: ["Hacim: 5 Litre", "Koli İçi: 4 Adet", "Özellik: Gliserin katkılı", "Tasarruf: Sıvı sabuna göre %50"],
+    image: "img/kimyasal-4.jpg"
+  },
 
-  // YENİ: Başlangıçta katalog bölümünü tamamen gizliyoruz. 
-  // Sadece bir kategoriye veya menüden "Tüm Ürünler"e tıklandığında açılacak.
-  katalogSection.classList.add("hidden");
+  // ==========================================
+  // 3. SARF MALZEMELER (img/sarf-1.jpg ... sarf-4.jpg)
+  // ==========================================
+  {
+    id: "sarf-1",
+    category: "sarf",
+    title: "Battal Boy Çöp Torbası (80x110)",
+    desc: "Dayanıklı polietilen hammaddeden üretilmiş, tabandan sızdırmaz kaynaklı endüstriyel çöp poşeti.",
+    code: "SR-CP80",
+    badge: "Çok Satan",
+    specs: ["Ölçü: 80 x 110 cm", "Paket İçi: 10 Rulo (100 Adet)", "Koli Ağırlığı: 8 kg", "Renk: Siyah"],
+    image: "img/sarf-1.jpg"
+  },
+  {
+    id: "sarf-2",
+    category: "sarf",
+    title: "Hantal Konteyner Torbası (100x120)",
+    desc: "Ağır sanayi atıkları ve üretim tesisleri için ekstra kalın mukavemete sahip büyük boy torba.",
+    code: "SR-CP100",
+    badge: "Ağır Hizmet",
+    specs: ["Ölçü: 100 x 120 cm", "Mikron: Ağır Hizmet Tipi", "Koli İçi: 100 Adet", "Özellik: Yırtılma dirençli"],
+    image: "img/sarf-2.jpg"
+  },
+  {
+    id: "sarf-3",
+    category: "sarf",
+    title: "Mikrofiber Temizlik Bezi (40x40 - 5 Renk)",
+    desc: "Toz ve suyu iz bırakmadan hapseden, çamaşır makinesinde yıkanabilir kurumsal renk kodlu bezler.",
+    code: "SR-MB40",
+    badge: "5 Renk Kodlu",
+    specs: ["Ölçü: 40 x 40 cm", "Ağırlık: 300 GSM", "Paket İçi: 10'lu Paket", "Renkler: Mavi, Kırmızı, Sarı, Yeşil, Beyaz"],
+    image: "img/sarf-3.jpg"
+  },
+  {
+    id: "sarf-4",
+    category: "sarf",
+    title: "Mavi Nitril Muayene Eldiveni",
+    desc: "Gıda üretimi ve genel hijyen uygulamalarına uygun, pudrasız ve lateks içermeyen nitril eldiven.",
+    code: "SR-NE100",
+    badge: "Gıda Uyumlu",
+    specs: ["Beden: S / M / L / XL", "Kutu İçi: 100 Adet", "Koli İçi: 10 Kutu (1000 Adet)", "Tip: Pudrasız Nitril"],
+    image: "img/sarf-4.jpg"
+  },
 
-  function renderFilters() {
-    if (!filterBar) return;
-    filterBar.innerHTML = categories.map(cat => {
-      const count = cat.id === "all" ? products.length : products.filter(p => p.category === cat.id).length;
-      const isActive = currentFilter === cat.id;
-      return `
-        <button type="button" data-filter="${cat.id}" 
-                class="filter-chip inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-ink-soft transition-colors ${isActive ? '!bg-brand !text-white !border-brand' : 'hover:border-brand'}">
-          <span>${cat.label}</span>
-          <span class="inline-flex items-center justify-center min-w-[1.35rem] h-[1.35rem] px-1 rounded-full text-[11px] font-mono font-semibold ${isActive ? 'bg-white/20 text-white' : 'bg-base-100 text-ink-soft'}">${count}</span>
-        </button>
-      `;
-    }).join("");
-
-    document.querySelectorAll(".filter-chip").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        currentFilter = e.currentTarget.dataset.filter;
-        renderFilters();
-        renderProducts();
-      });
-    });
+  // ==========================================
+  // 4. EKİPMANLAR & DİSPENSERLER (img/dispenser-1.jpg ... dispenser-3.jpg)
+  // ==========================================
+  {
+    id: "dispenser-1",
+    category: "dispenser",
+    title: "Sensörlü Fotoselli Havlu Dispenseri",
+    desc: "Pilli veya adaptörlü çalışabilen, yaprak boyu ayarlanabilir temassız otomatik havlu dispenseri.",
+    code: "EK-FH01",
+    badge: "Çok Satan",
+    specs: ["Çalışma: Pil / 220V Adaptör", "Rulo: 21 cm Rulo Havlu Uyumlu", "Kasa: ABS Darbe Dirençli", "Garanti: 2 Yıl"],
+    image: "img/dispenser-1.jpg"
+  },
+  {
+    id: "dispenser-2",
+    category: "dispenser",
+    title: "Çift Kovalı Presli Temizlik Arabası (50L)",
+    desc: "Temiz ve kirli suyu ayıran 2x25L kovalı, dikey pres mekanizmalı profesyonel kat temizlik arabası.",
+    code: "EK-CA50",
+    badge: "Sağlam Şasi",
+    specs: ["Kapasite: 2 x 25 Litre (50L)", "Gövde: Metal Şasi + ABS Kova", "Pres: Ağır hizmet dikey pres", "Teker: 360° Kauçuk Döner"],
+    image: "img/dispenser-2.jpg"
+  },
+  {
+    id: "dispenser-3",
+    category: "dispenser",
+    title: "Paslanmaz İnox Z-Katlama Havluluk",
+    desc: "304 kalite mat paslanmaz çelikten üretilmiş, anahtarlı kilit mekanizmalı dayanıklı Z-havluluk.",
+    code: "EK-ZH304",
+    badge: "304 Paslanmaz",
+    specs: ["Malzeme: 304 Kalite İnox", "Kapasite: 400 Yaprak", "Kilit: Emniyet kilitli", "Montaj: Duvar montaj kiti dahil"],
+    image: "img/dispenser-3.jpg"
   }
+];
 
-  function renderProducts() {
-    if (!productGrid) return;
-    const filtered = currentFilter === "all" ? products : products.filter(p => p.category === currentFilter);
-    const catLabel = categories.find(c => c.id === currentFilter)?.label || "Tüm Ürünler";
+// ÜRÜNLERİ EKRANA BASMA VE FİLTRELEME
+function renderProducts(category = 'all') {
+    const grid = document.getElementById('product-grid');
+    const resultCount = document.getElementById('result-count');
+    if (!grid) return;
+
+    grid.innerHTML = '';
     
-    if (katalogTitle) katalogTitle.textContent = catLabel;
-    if (resultCount) resultCount.textContent = `${filtered.length} ürün bulundu`;
-    
-    productGrid.innerHTML = filtered.map(product => `
-      <article class="product-card group bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-card overflow-hidden flex flex-col h-full">
-        <div class="flex items-center justify-between px-4 pt-4">
-          <span class="font-mono text-[11px] font-semibold text-ink-soft bg-base-100 rounded px-2 py-1">${product.code}</span>
-          ${product.badge ? `<span class="font-mono text-[11px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 rounded px-2 py-0.5">${product.badge}</span>` : ""}
-        </div>
-        <div class="tag-perforation h-px mx-4 mt-3"></div>
-        <div class="p-4 flex flex-col flex-1">
-          <div class="flex items-start gap-3">
-            <div class="w-10 h-10 shrink-0 rounded-lg bg-brand-50 text-brand p-2">${product.icon}</div>
-            <div class="min-w-0">
-              <span class="text-[10px] font-mono font-semibold text-brand-dark uppercase tracking-wide">${product.categoryLabel}</span>
-              <h3 class="font-display font-semibold text-sm leading-snug text-ink mt-0.5">${product.title}</h3>
+    let filtered = products;
+    if (category !== 'all') {
+        filtered = products.filter(p => p.category === category);
+    }
+
+    if (resultCount) {
+        resultCount.innerText = `${filtered.length} ürün listeleniyor`;
+    }
+
+    if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-500 font-medium">Bu kategoride henüz ürün bulunmuyor.</div>`;
+        return;
+    }
+
+    filtered.forEach(p => {
+        const badgeHtml = p.badge ? `<span class="absolute top-3 right-3 bg-white/95 backdrop-blur text-brand-dark text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm border border-slate-100">${p.badge}</span>` : '';
+
+        const card = document.createElement('div');
+        card.className = 'product-card bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-cardHover transition-all flex flex-col group cursor-pointer';
+        
+        card.addEventListener('click', () => {
+            openModal(p);
+        });
+
+        card.innerHTML = `
+            <div class="relative w-full aspect-square bg-slate-50 overflow-hidden border-b border-slate-100 p-6 flex items-center justify-center">
+                <img src="${p.image}" alt="${p.title}" loading="lazy" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 mix-blend-multiply" onerror="this.onerror=null; this.src='img/logo.png';" />
+                ${badgeHtml}
             </div>
-          </div>
-          <p class="mt-3 text-[13px] text-ink-soft leading-relaxed flex-1 line-clamp-2">${product.desc}</p>
-          <button type="button" onclick="openModal(${product.id})" class="mt-4 w-full bg-base-50 hover:bg-brand hover:text-white text-ink font-semibold text-[13px] py-2 rounded-lg border border-slate-200 hover:border-brand transition-colors">
-            İncele
-          </button>
-        </div>
-      </article>
-    `).join("");
-  }
-
-  // YENİ: Kataloğu Görünür Yapma ve Kaydırma Fonksiyonu
-  function openCatalog(category = "all") {
-    currentFilter = category;
-    katalogSection.classList.remove("hidden"); // Gizliliği kaldır
-    renderFilters();
-    renderProducts();
-    // DOM'un güncellenmesi için ufak bir gecikme ile kaydır
-    setTimeout(() => {
-      katalogSection.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 50);
-  }
-
-  // 1. Ana sayfadaki büyük kategori kartlarına tıklanınca
-  document.querySelectorAll("[data-main-category]").forEach(box => {
-    box.addEventListener("click", (e) => {
-      openCatalog(e.currentTarget.dataset.mainCategory);
+            <div class="p-5 flex flex-col flex-grow">
+                <span class="text-[10px] font-mono font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">KOD: ${p.code}</span>
+                <h3 class="font-display font-semibold text-ink text-base mb-2 group-hover:text-brand transition-colors">${p.title}</h3>
+                <p class="text-sm text-ink-soft line-clamp-2 leading-relaxed">${p.desc}</p>
+            </div>
+        `;
+        grid.appendChild(card);
     });
-  });
+}
 
-  // 2. Üst menü veya Footer'daki linklere tıklanınca (Tüm ürünler veya alt kategoriler)
-  document.querySelectorAll('a[href="#katalog"]').forEach(link => {
-    link.addEventListener("click", (e) => {
-      e.preventDefault();
-      const targetCategory = e.currentTarget.dataset.footerFilter || "all";
-      openCatalog(targetCategory);
-    });
-  });
+// MODAL AÇMA
+function openModal(product) {
+    const modal = document.getElementById('product-modal');
+    const backdrop = document.getElementById('modal-backdrop');
+    const panel = document.getElementById('modal-panel');
+    const modalImage = document.getElementById('modal-image');
+    
+    if (!modal) return;
 
-  // Modal İşlemleri
-  const modal = document.getElementById("product-modal");
-  const backdrop = document.getElementById("modal-backdrop");
-  const panel = document.getElementById("modal-panel");
-  
-  window.openModal = (id) => {
-    const product = products.find(p => p.id === id);
-    if (!product) return;
+    if (modalImage) {
+        modalImage.src = product.image;
+        modalImage.alt = product.title;
+        modalImage.onerror = function() {
+            this.onerror = null;
+            this.src = 'img/logo.png';
+        };
+    }
 
-    document.getElementById("modal-icon").innerHTML = product.icon;
-    document.getElementById("modal-category").textContent = product.categoryLabel;
-    document.getElementById("modal-title").textContent = product.title;
-    document.getElementById("modal-code").textContent = product.code;
-    document.getElementById("modal-desc").textContent = product.desc;
-
-    const badgeEl = document.getElementById("modal-badge");
-    if (product.badge) { badgeEl.textContent = product.badge; badgeEl.classList.remove("hidden"); } 
-    else { badgeEl.classList.add("hidden"); }
-
-    document.getElementById("modal-specs").innerHTML = product.specs.map(s => `<li class="text-sm text-ink-soft border-b border-slate-100 pb-2 last:border-0">• ${s}</li>`).join("");
-
-    const waText = encodeURIComponent(`Merhaba, ${product.title} (Kod: ${product.code}) ürünü için fiyat alabilir miyim?`);
-    document.getElementById("modal-whatsapp").href = `https://wa.me/905001234567?text=${waText}`;
-
-    modal.classList.remove("hidden");
-    setTimeout(() => {
-      backdrop.classList.remove("opacity-0");
-      panel.classList.remove("opacity-0", "translate-y-6", "sm:scale-95");
-    }, 10);
-  };
-
-  window.closeModal = () => {
-    backdrop.classList.add("opacity-0");
-    panel.classList.add("opacity-0", "translate-y-6", "sm:scale-95");
-    setTimeout(() => modal.classList.add("hidden"), 300);
-  };
-
-  document.getElementById("modal-close")?.addEventListener("click", closeModal);
-  backdrop?.addEventListener("click", closeModal);
-
-  // İletişim Formu - Gerçek API Bağlantısı ve Bildirim
-  const form = document.getElementById("quote-form");
-  const success = document.getElementById("form-success");
-
-  form?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const originalBtnText = submitBtn.textContent;
-
-    const fd = new FormData(form);
-    const payload = {
-      name: fd.get("name")?.toString().trim(),
-      company: fd.get("company")?.toString().trim() || null,
-      phone: fd.get("phone")?.toString().trim(),
-      category: fd.get("category")?.toString().trim() || null,
-      message: fd.get("message")?.toString().trim()
+    const catNames = { 
+        'kagit': 'HİJYEN KAĞITLARI', 
+        'kimyasal': 'TEMİZLİK KİMYASALLARI', 
+        'sarf': 'SARF MALZEMELER', 
+        'dispenser': 'EKİPMANLAR & DİSPENSERLER' 
     };
+    
+    document.getElementById('modal-category').innerText = catNames[product.category] || 'ÜRÜN DETAYI';
+    document.getElementById('modal-title').innerText = product.title;
+    document.getElementById('modal-desc').innerText = product.desc;
+    document.getElementById('modal-code').innerText = product.code;
 
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Gönderiliyor...";
-
-    try {
-      const apiUrl = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-  ? "http://localhost:3000/api/quote"
-  : "/api/quote";
-
-const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        success.textContent = "Talebiniz başarıyla alındı. En kısa sürede sizinle iletişime geçeceğiz.";
-        success.removeAttribute("class");
-        success.setAttribute("class", "mt-3 text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 p-3 rounded-lg block");
-        form.reset();
-      } else {
-        throw new Error(result.error || "Bir hata oluştu.");
-      }
-    } catch (err) {
-      success.textContent = err.message || "Teklif gönderilemedi. Lütfen WhatsApp üzerinden bize ulaşın.";
-      success.removeAttribute("class");
-      success.setAttribute("class", "mt-3 text-sm text-red-700 bg-red-50 border border-red-200 p-3 rounded-lg block");
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = originalBtnText;
-      setTimeout(() => {
-        success.className = "hidden mt-3 text-sm p-3 rounded-lg";
-      }, 6000);
-    }
-  });
-
-  // Dinamik Yıl Gösterimi
-  const yearEl = document.getElementById("year");
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
-});
-
-// Sayfa kaydırıldığında header ve logoyu orantılı küçültme
-  const header = document.getElementById("main-header");
-  const headerContainer = document.getElementById("header-container");
-  const logo = document.getElementById("main-logo");
-
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 40) {
-      // Kaydırılınca: Şeffaf zemin + kompakt header + orantılı küçülen logo
-      header.classList.remove("bg-white/95", "border-slate-200");
-      header.classList.add("bg-white/80", "backdrop-blur-md", "shadow-sm", "border-slate-200/60");
-      
-      headerContainer.classList.remove("h-20", "sm:h-24");
-      headerContainer.classList.add("h-16", "sm:h-16");
-
-      if (logo) {
-        logo.classList.remove("h-14", "sm:h-20");
-        logo.classList.add("h-11", "sm:h-12");
-      }
+    const badge = document.getElementById('modal-badge');
+    if (product.badge) {
+        badge.innerText = product.badge;
+        badge.classList.remove('hidden');
     } else {
-      // En tepede: Orijinal dolgun boyutlar
-      header.classList.add("bg-white/95", "border-slate-200");
-      header.classList.remove("bg-white/80", "backdrop-blur-md", "shadow-sm", "border-slate-200/60");
-      
-      headerContainer.classList.add("h-20", "sm:h-24");
-      headerContainer.classList.remove("h-16", "sm:h-16");
-
-      if (logo) {
-        logo.classList.add("h-14", "sm:h-20");
-        logo.classList.remove("h-11", "sm:h-12");
-      }
+        badge.classList.add('hidden');
     }
-  });
+
+    const specsUl = document.getElementById('modal-specs');
+    specsUl.innerHTML = '';
+    product.specs.forEach(spec => {
+        specsUl.innerHTML += `
+            <li class="flex items-center justify-between py-2 border-b border-slate-100 last:border-0 text-sm">
+                <span class="text-slate-500">${spec.split(':')[0]}:</span>
+                <span class="font-medium text-ink">${spec.split(':')[1] || ''}</span>
+            </li>
+        `;
+    });
+
+    modal.style.display = 'flex';
+    modal.classList.remove('hidden');
+    
+    requestAnimationFrame(() => {
+        if (backdrop) backdrop.classList.remove('opacity-0');
+        if (panel) panel.classList.remove('opacity-0', 'translate-y-8', 'scale-95');
+    });
+}
+
+// MODAL KAPATMA
+function closeModal() {
+    const modal = document.getElementById('product-modal');
+    const backdrop = document.getElementById('modal-backdrop');
+    const panel = document.getElementById('modal-panel');
+
+    if (!modal) return;
+
+    if (backdrop) backdrop.classList.add('opacity-0');
+    if (panel) panel.classList.add('opacity-0', 'translate-y-8', 'scale-95');
+    
+    setTimeout(() => {
+        modal.style.display = 'none';
+        modal.classList.add('hidden');
+    }, 300);
+}
+
+// SAYFA YÜKLENİNCE
+document.addEventListener('DOMContentLoaded', () => {
+    renderProducts('all');
+
+    // Filtre Çubuğu
+    const filterBar = document.getElementById('filter-bar');
+    if (filterBar) {
+        const categories = [
+            { id: 'all', name: 'Tüm Ürünler' },
+            { id: 'kagit', name: 'Hijyen Kağıtları' },
+            { id: 'kimyasal', name: 'Kimyasallar' },
+            { id: 'sarf', name: 'Sarf Malzemeler' },
+            { id: 'dispenser', name: 'Ekipmanlar' }
+        ];
+
+        filterBar.innerHTML = '';
+        categories.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `filter-chip px-4 py-2 rounded-xl text-xs font-semibold border transition-all ${cat.id === 'all' ? 'bg-brand text-white border-brand' : 'bg-white text-ink border-slate-200 hover:border-brand'}`;
+            btn.innerText = cat.name;
+            btn.setAttribute('data-category', cat.id);
+            if (cat.id === 'all') btn.setAttribute('data-active', 'true');
+
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-chip').forEach(c => {
+                    c.setAttribute('data-active', 'false');
+                    c.className = 'filter-chip px-4 py-2 rounded-xl text-xs font-semibold border bg-white text-ink border-slate-200 hover:border-brand';
+                });
+                btn.setAttribute('data-active', 'true');
+                btn.className = 'filter-chip px-4 py-2 rounded-xl text-xs font-semibold border bg-brand text-white border-brand';
+                
+                const titleEl = document.getElementById('katalog-title');
+                if (titleEl) titleEl.innerText = cat.name;
+
+                renderProducts(cat.id);
+            });
+            filterBar.appendChild(btn);
+        });
+    }
+
+    // Üst Kategori Kutuları
+    document.querySelectorAll('[data-main-category]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const cat = btn.getAttribute('data-main-category');
+            renderProducts(cat);
+            const katalog = document.getElementById('katalog');
+            if (katalog) katalog.scrollIntoView({ behavior: 'smooth' });
+            
+            document.querySelectorAll('.filter-chip').forEach(c => {
+                if (c.getAttribute('data-category') === cat) c.click();
+            });
+        });
+    });
+
+    // Footer Kategori Linkleri
+    document.querySelectorAll('[data-footer-filter]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const cat = link.getAttribute('data-footer-filter');
+            renderProducts(cat);
+            const katalog = document.getElementById('katalog');
+            if (katalog) katalog.scrollIntoView({ behavior: 'smooth' });
+
+            document.querySelectorAll('.filter-chip').forEach(c => {
+                if (c.getAttribute('data-category') === cat) c.click();
+            });
+        });
+    });
+});
