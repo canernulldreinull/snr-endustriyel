@@ -1,4 +1,4 @@
-// Ürün Veritabanı (Görseller kendi img klasöründen çekilecek)
+// Ürün Veritabanı
 const products = [
   {
     id: "kagit-1",
@@ -82,7 +82,7 @@ const products = [
   }
 ];
 
-// Ürünleri Render Etme
+// Ürünleri Ekrana Basma
 function renderProducts(filter = 'kagit') { 
     const grid = document.getElementById('product-grid');
     const resultCount = document.getElementById('result-count');
@@ -104,11 +104,15 @@ function renderProducts(filter = 'kagit') {
 
         const card = document.createElement('div');
         card.className = 'bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-cardHover transition-all flex flex-col group cursor-pointer';
-        card.onclick = () => openModal(p);
+        
+        // Tıklama olayını garantilemek için eventListener kullanıyoruz
+        card.addEventListener('click', () => {
+            openModal(p);
+        });
 
         card.innerHTML = `
-            <div class="relative w-full aspect-square bg-slate-50 overflow-hidden border-b border-slate-100">
-                <img src="${p.image}" alt="${p.title}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <div class="relative w-full aspect-square bg-slate-50 overflow-hidden border-b border-slate-100 p-6 flex items-center justify-center">
+                <img src="${p.image}" alt="${p.title}" loading="lazy" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 mix-blend-multiply" />
                 ${badgeHtml}
             </div>
             <div class="p-5 flex flex-col flex-grow">
@@ -126,19 +130,23 @@ function openModal(product) {
     const modal = document.getElementById('product-modal');
     const backdrop = document.getElementById('modal-backdrop');
     const panel = document.getElementById('modal-panel');
+    const modalImage = document.getElementById('modal-image');
+    
     if (!modal) return;
 
+    // Fotoğrafı kocaman ekrana ver
+    if (modalImage) {
+        modalImage.src = product.image;
+        modalImage.alt = product.title;
+    }
+
+    // Metinleri Doldur
     document.getElementById('modal-category').innerText = product.category === 'kagit' ? 'HİJYEN KAĞITLARI' : 'DİĞER';
     document.getElementById('modal-title').innerText = product.title;
     document.getElementById('modal-desc').innerText = product.desc;
     document.getElementById('modal-code').innerText = product.code;
 
-    // Resim Güncelleme
-    const modalIcon = document.getElementById('modal-icon');
-    if (modalIcon) {
-        modalIcon.innerHTML = `<img src="${product.image}" alt="${product.title}" class="w-full h-full object-cover rounded-xl" />`;
-    }
-
+    // Rozet Kontrolü
     const badge = document.getElementById('modal-badge');
     if (product.badge) {
         badge.innerText = product.badge;
@@ -147,26 +155,31 @@ function openModal(product) {
         badge.classList.add('hidden');
     }
 
+    // Özellikleri (Specs) Ekle
     const specsUl = document.getElementById('modal-specs');
     specsUl.innerHTML = '';
     product.specs.forEach(spec => {
         specsUl.innerHTML += `
-            <li class="flex items-center justify-between py-2 border-b border-slate-100 last:border-0 text-sm">
+            <li class="flex items-center justify-between py-2.5 border-b border-slate-100 last:border-0 text-sm">
                 <span class="text-slate-500">${spec.split(':')[0]}:</span>
                 <span class="font-medium text-ink">${spec.split(':')[1] || ''}</span>
             </li>
         `;
     });
 
+    // WhatsApp Linkini Hazırla
     const wpBtn = document.getElementById('modal-whatsapp');
     const msg = encodeURIComponent(`Merhaba, ${product.code} kodlu "${product.title}" ürünü hakkında toptan fiyat bilgisi almak istiyorum.`);
     wpBtn.href = `https://wa.me/905001234567?text=${msg}`;
 
-    // Modal Açılış Animasyonu
+    // Modal'ı Göster (Sınıfları temizle ve ekle)
     modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    
+    // Animasyonu tetiklemek için ufak bir gecikme
     requestAnimationFrame(() => {
         backdrop.classList.remove('opacity-0');
-        panel.classList.remove('opacity-0', 'translate-y-6', 'sm:scale-95');
+        panel.classList.remove('opacity-0', 'translate-y-8', 'scale-95');
     });
 }
 
@@ -175,18 +188,24 @@ function closeModal() {
     const backdrop = document.getElementById('modal-backdrop');
     const panel = document.getElementById('modal-panel');
 
+    // Animasyonu geri sar
     backdrop.classList.add('opacity-0');
-    panel.classList.add('opacity-0', 'translate-y-6', 'sm:scale-95');
+    panel.classList.add('opacity-0', 'translate-y-8', 'scale-95');
     
+    // Animasyon bittikten sonra gizle
     setTimeout(() => {
         modal.classList.add('hidden');
+        modal.classList.remove('flex');
     }, 300);
 }
 
+// Olay Dinleyicileri (Sayfa Yüklenince)
 document.addEventListener('DOMContentLoaded', () => {
     renderProducts('kagit');
+    
     const closeBtn = document.getElementById('modal-close');
     const backdrop = document.getElementById('modal-backdrop');
+    
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
     if (backdrop) backdrop.addEventListener('click', closeModal);
 });
