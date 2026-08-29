@@ -1,4 +1,4 @@
-// Ürün Veritabanı
+// Ürün Veritabanı (Görseller kendi img klasöründen çekilecek)
 const products = [
   {
     id: "kagit-1",
@@ -8,7 +8,7 @@ const products = [
     code: "HK-Z200",
     badge: "Çok Satan",
     specs: ["Kat: 2 Katlı", "Yaprak: 200 Adet/Paket", "Koli İçi: 12 Paket", "Hammadde: %100 Saf Selüloz"],
-    image: "https://images.unsplash.com/photo-1599839619722-39751411ea63?auto=format&fit=crop&w=600&h=600&q=80"
+    image: "img/kagit-1.jpg"
   },
   {
     id: "kagit-2",
@@ -18,7 +18,7 @@ const products = [
     code: "HK-TK72",
     badge: "",
     specs: ["Kat: 2 Katlı", "Rulo Uzunluğu: 17 Metre", "Koli İçi: 72 Rulo", "Özellik: Suda çabuk erir"],
-    image: "https://images.unsplash.com/photo-1584486520270-19eca1ef4696?auto=format&fit=crop&w=600&h=600&q=80"
+    image: "img/kagit-2.jpg"
   },
   {
     id: "kagit-3",
@@ -28,7 +28,7 @@ const products = [
     code: "HK-SM21",
     badge: "Ekonomik",
     specs: ["Genişlik: 21 cm", "Uzunluk: 150 Metre", "Koli İçi: 6 Rulo", "Uyum: Tüm markalarla uyumlu"],
-    image: "https://images.unsplash.com/photo-1628189679198-d1dbd89694ce?auto=format&fit=crop&w=600&h=600&q=80"
+    image: "img/kagit-3.jpg"
   },
   {
     id: "kagit-4",
@@ -38,7 +38,7 @@ const products = [
     code: "HK-IC06",
     badge: "",
     specs: ["Kat: 2 Katlı", "Ağırlık: 1.2 kg / Rulo", "Koli İçi: 6 Rulo", "Kullanım: Merkezi çekim"],
-    image: "https://images.unsplash.com/photo-1585060544812-6b45742d762f?auto=format&fit=crop&w=600&h=600&q=80"
+    image: "img/kagit-4.jpg"
   },
   {
     id: "kagit-5",
@@ -48,7 +48,7 @@ const products = [
     code: "HK-MJ12",
     badge: "",
     specs: ["Kat: 2 Katlı", "Uzunluk: 130 Metre", "Koli İçi: 12 Rulo", "Kullanım: Jumbo Dispenser"],
-    image: "https://images.unsplash.com/photo-1584556812952-905ffd0c611a?auto=format&fit=crop&w=600&h=600&q=80"
+    image: "img/kagit-5.jpg"
   },
   {
     id: "kagit-6",
@@ -58,7 +58,7 @@ const products = [
     code: "HK-EB02",
     badge: "Ağır Hizmet",
     specs: ["Kat: 2 Katlı (Laminasyonlu)", "Ağırlık: 4.5 kg / Bobin", "Koli İçi: 2 Bobin", "Emicilik: Ultra Yüksek"],
-    image: "https://images.unsplash.com/photo-1605367332219-48ee12f949c4?auto=format&fit=crop&w=600&h=600&q=80"
+    image: "img/kagit-6.jpg"
   },
   {
     id: "kagit-7",
@@ -68,7 +68,7 @@ const products = [
     code: "HK-P30",
     badge: "",
     specs: ["Boyut: 30x30 cm", "Kat: Tek Katlı", "Paket: 100 Adet", "Koli İçi: 32 Paket"],
-    image: "https://images.unsplash.com/photo-1592650042456-e630e6bc05a8?auto=format&fit=crop&w=600&h=600&q=80"
+    image: "img/kagit-7.jpg"
   },
   {
     id: "kagit-8",
@@ -78,12 +78,12 @@ const products = [
     code: "HK-MM01",
     badge: "Yeni",
     specs: ["Genişlik: 50 cm", "Uzunluk: 50 Metre", "Koli İçi: 12 Rulo", "Yapı: Çift katlı (Kağıt + PE Film)"],
-    image: "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?auto=format&fit=crop&w=600&h=600&q=80"
+    image: "img/kagit-8.jpg"
   }
 ];
 
 // Ürünleri Render Etme
-function renderProducts(filter = 'kagit') { // Varsayılan olarak kagit kategorisini gösteriyoruz
+function renderProducts(filter = 'kagit') { 
     const grid = document.getElementById('product-grid');
     const resultCount = document.getElementById('result-count');
     if (!grid) return;
@@ -108,7 +108,7 @@ function renderProducts(filter = 'kagit') { // Varsayılan olarak kagit kategori
 
         card.innerHTML = `
             <div class="relative w-full aspect-square bg-slate-50 overflow-hidden border-b border-slate-100">
-                <img src="${p.image}" alt="${p.title}" loading="lazy" class="w-full h-full object-cover mix-blend-multiply group-hover:scale-105 transition-transform duration-500" />
+                <img src="${p.image}" alt="${p.title}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 ${badgeHtml}
             </div>
             <div class="p-5 flex flex-col flex-grow">
@@ -132,6 +132,12 @@ function openModal(product) {
     document.getElementById('modal-title').innerText = product.title;
     document.getElementById('modal-desc').innerText = product.desc;
     document.getElementById('modal-code').innerText = product.code;
+
+    // Resim Güncelleme
+    const modalIcon = document.getElementById('modal-icon');
+    if (modalIcon) {
+        modalIcon.innerHTML = `<img src="${product.image}" alt="${product.title}" class="w-full h-full object-cover rounded-xl" />`;
+    }
 
     const badge = document.getElementById('modal-badge');
     if (product.badge) {
@@ -174,17 +180,13 @@ function closeModal() {
     
     setTimeout(() => {
         modal.classList.add('hidden');
-    }, 300); // 0.3s animasyon bekleme süresi
+    }, 300);
 }
 
-// Sayfa Yüklendiğinde Olay Dinleyicileri Ekle
 document.addEventListener('DOMContentLoaded', () => {
-    // Sayfa açılışında tüm ürünleri (veya sadece kağıtları) listele
     renderProducts('kagit');
-
     const closeBtn = document.getElementById('modal-close');
     const backdrop = document.getElementById('modal-backdrop');
-
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
     if (backdrop) backdrop.addEventListener('click', closeModal);
 });
