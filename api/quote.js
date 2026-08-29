@@ -1,58 +1,64 @@
 const { createClient } = require('@supabase/supabase-js');
 
-const rawUrl = (process.env.SUPABASE_URL || '').trim().replace(/\/+$/, '');
-const rawKey = (process.env.SUPABASE_KEY || '').trim();
-const supabase = createClient(rawUrl, rawKey);
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
+
+let supabase = null;
+if (supabaseUrl && supabaseKey) {
+  supabase = createClient(supabaseUrl, supabaseKey);
+}
 
 module.exports = async (req, res) => {
+  // CORS başlıkları
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+  );
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Yalnızca POST istekleri desteklenir.' });
+    return res.status(405).json({ success: false, message: 'Yalnızca POST istekleri kabul edilir.' });
   }
 
-  let body = req.body;
-  if (typeof body === 'string') {
-    try {
-      body = JSON.parse(body);
-    } catch {
-      return res.status(400).json({ error: 'Geçersiz JSON formatı.' });
-    }
-  }
-
-  const { name, company, phone, category, message } = body || {};
-
-  if (!name || !phone || !message) {
-    return res.status(400).json({ error: 'Lütfen zorunlu alanları doldurun.' });
+  if (!supabase) {
+    return res.status(500).json({ 
+      success: false, 
+      message: 'Supabase bağlantı bilgileri (Environment Variables) eksik veya hatalı.' 
+    });
   }
 
   try {
-    const { error } = await supabase
-      .from('quotes')
-      .insert([{
-        name: String(name),
-        company: company ? String(company) : null,
-        phone: String(phone),
-        category: category ? String(category) : null,
-        message: String(message),
-        status: 'yeni'
-      }]);
+    const { fullName, email, phone, company, service, message } = req.body || {};
 
-    if (error) {
-      console.error('Supabase Hatası:', error);
-      return res.status(400).json({ error: error.message });
+    if (!fullName || !email || !phone || !service) {
+      return res.status(400).json({ success: false, message: 'Lütfen zorunlu alanları doldurun.' });
     }
 
-    return res.status(200).json({ success: true, message: 'Teklif talebi başarıyla alındı.' });
+    const { data, error } = await supabase
+      .from('quotes')
+      .insert([
+        {
+          full_name: fullName,
+          email: email,
+          phone: phone,
+          company: company || null,
+          service: service,
+          message: message || null
+        }
+      ]);
+
+    if (error) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+
+    return res.status(200).json({ success: true, message: 'Teklif talebiniz başarıyla alındı.' });
   } catch (err) {
-    console.error('Sunucu Hatası:', err);
-    return res.status(500).json({ error: err.message || 'Veritabanı hatası.' });
+    return res.status(500).json({ success: false, message: err.message || 'Sunucu hatası oluştu.' });
   }
 };
