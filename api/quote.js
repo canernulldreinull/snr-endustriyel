@@ -1,15 +1,6 @@
 const { createClient } = require('@supabase/supabase-js');
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_KEY;
-
-let supabase = null;
-if (supabaseUrl && supabaseKey) {
-  supabase = createClient(supabaseUrl, supabaseKey);
-}
-
 module.exports = async (req, res) => {
-  // CORS başlıkları
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -26,10 +17,23 @@ module.exports = async (req, res) => {
     return res.status(405).json({ success: false, message: 'Yalnızca POST istekleri kabul edilir.' });
   }
 
-  if (!supabase) {
+  const supabaseUrl = (process.env.SUPABASE_URL || '').trim();
+  const supabaseKey = (process.env.SUPABASE_KEY || '').trim();
+
+  if (!supabaseUrl || !supabaseKey) {
     return res.status(500).json({ 
       success: false, 
-      message: 'Supabase bağlantı bilgileri (Environment Variables) eksik veya hatalı.' 
+      message: 'Supabase ortam değişkenleri eksik veya okunamadı.' 
+    });
+  }
+
+  let supabase;
+  try {
+    supabase = createClient(supabaseUrl, supabaseKey);
+  } catch (clientErr) {
+    return res.status(500).json({ 
+      success: false, 
+      message: `Supabase bağlantı hatası: ${clientErr.message}` 
     });
   }
 
@@ -40,7 +44,7 @@ module.exports = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Lütfen zorunlu alanları doldurun.' });
     }
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('quotes')
       .insert([
         {
