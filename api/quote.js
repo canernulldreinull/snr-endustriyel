@@ -1,4 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
+const querystring = require('querystring');
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -23,38 +24,39 @@ module.exports = async (req, res) => {
   try {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Body parse işlemi (string geldiyse JSON'a çevir)
-    let body = req.body;
-    if (typeof body === 'string') {
+    // Gelen veriyi her formatta güvenle parse etme
+    let payload = req.body;
+
+    if (typeof payload === 'string') {
       try {
-        body = JSON.parse(body);
+        payload = JSON.parse(payload);
       } catch (e) {
-        body = {};
+        payload = querystring.parse(payload);
+      }
+    } else if (Buffer.isBuffer(payload)) {
+      const str = payload.toString('utf-8');
+      try {
+        payload = JSON.parse(str);
+      } catch (e) {
+        payload = querystring.parse(str);
       }
     }
-    body = body || {};
 
-    // Olası tüm alan isimlerini yakala (camelCase veya snake_case)
-    const fullName = body.fullName || body.full_name || body.name || '';
-    const email = body.email || '';
-    const phone = body.phone || body.telefon || '';
-    const company = body.company || body.firma || null;
-    const service = body.service || body.hizmet || 'Genel';
-    const message = body.message || body.mesaj || null;
+    payload = payload || {};
 
-    if (!fullName || !email) {
-      return res.status(400).json({ 
-        success: false, 
-        message: 'Lütfen isim ve e-posta alanlarını doldurun.' 
-      });
-    }
+    const fullName = payload.fullName || payload.full_name || payload.name || payload.adsoyad || payload['full-name'] || '';
+    const email = payload.email || payload.eposta || payload.mail || '';
+    const phone = payload.phone || payload.telefon || payload.tel || '';
+    const company = payload.company || payload.firma || payload.sirket || null;
+    const service = payload.service || payload.hizmet || payload.urun || 'Genel';
+    const message = payload.message || payload.mesaj || payload.not || null;
 
     const { error } = await supabase
       .from('quotes')
       .insert([
         {
-          full_name: fullName,
-          email: email,
+          full_name: fullName || 'İsimsiz Gönderi',
+          email: email || 'eposta-yok@bilgi.com',
           phone: phone,
           company: company,
           service: service,
