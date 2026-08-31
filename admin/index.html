@@ -1,12 +1,149 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="tr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SNR - İçerik Yönetim Paneli</title>
-  <link href="/admin/config.yml" type="text/yaml" rel="cms-config-url">
+  <meta charset="UTF-8">
+  <title>SNR - Ürün Yönetim Paneli</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: #0f172a; color: #f8fafc; font-family: sans-serif; padding: 40px 20px; }
+    .card { background: #1e293b; border: 1px solid #334155; color: #fff; }
+    .form-control, .form-select { background: #0f172a; border-color: #334155; color: #fff; }
+    .form-control:focus { background: #0f172a; color: #fff; border-color: #38bdf8; }
+  </style>
 </head>
 <body>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+<div class="container" style="max-width: 800px;">
+
+  <!-- Giriş Ekranı -->
+  <div id="loginBox" class="card p-4 mx-auto" style="max-width: 400px;">
+    <h4 class="text-center mb-3">Admin Girişi</h4>
+    <input type="password" id="passInput" class="form-control mb-3" placeholder="Panel Şifresi">
+    <button class="btn btn-primary w-100" onclick="login()">Giriş Yap</button>
+  </div>
+
+  <!-- Panel Ekranı -->
+  <div id="panelBox" style="display: none;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2>Ürün Yönetimi</h2>
+      <button class="btn btn-success" onclick="downloadJSON()">💾 Güncel JSON'ı İndir</button>
+    </div>
+
+    <!-- Yeni Ürün Ekle -->
+    <div class="card p-4 mb-4">
+      <h5>Yeni Ürün Ekle</h5>
+      <div class="row g-3 mt-1">
+        <div class="col-md-6">
+          <label class="form-label">Ürün Adı</label>
+          <input type="text" id="pTitle" class="form-control" placeholder="Örn: Sıvı Sabun 5L">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Ürün Kodu</label>
+          <input type="text" id="pCode" class="form-control" placeholder="Örn: SNR-202">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Kategori</label>
+          <select id="pCat" class="form-select">
+            <option value="kagit">Hijyen Kağıtları</option>
+            <option value="kimyasal">Temizlik Kimyasalları</option>
+            <option value="sarf">Sarf Malzemeler</option>
+            <option value="dispenser">Ekipman & Dispenser</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Görsel Yolu (img/...)</label>
+          <input type="text" id="pImg" class="form-control" placeholder="img/products/sabun.jpg">
+        </div>
+        <div class="col-12">
+          <label class="form-label">Açıklama</label>
+          <textarea id="pDesc" class="form-control" rows="2"></textarea>
+        </div>
+        <div class="col-12 text-end">
+          <button class="btn btn-primary" onclick="addProduct()">+ Listeye Ekle</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mevcut Ürün Listesi -->
+    <h4>Mevcut Ürünler (<span id="count">0</span>)</h4>
+    <div id="productList" class="mt-3"></div>
+  </div>
+
+</div>
+
+<script>
+  const PASS = "snr2026"; // İstediğin şifreyi buraya yazabilirsin
+  let products = [];
+
+  function login() {
+    if(document.getElementById("passInput").value === PASS) {
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("panelBox").style.display = "block";
+      fetchProducts();
+    } else {
+      alert("Hatalı şifre!");
+    }
+  }
+
+  async function fetchProducts() {
+    try {
+      const res = await fetch('/products.json');
+      products = await res.json();
+      render();
+    } catch(e) {
+      products = [];
+      render();
+    }
+  }
+
+  function render() {
+    document.getElementById("count").innerText = products.length;
+    const list = document.getElementById("productList");
+    list.innerHTML = "";
+    products.forEach((p, index) => {
+      list.innerHTML += `
+        <div class="card p-3 mb-2 d-flex flex-row justify-content-between align-items-center">
+          <div>
+            <strong>${p.title}</strong> <span class="badge bg-secondary">${p.code}</span>
+            <div class="small text-muted">${p.category}</div>
+          </div>
+          <button class="btn btn-danger btn-sm" onclick="removeProduct(${index})">Sil</button>
+        </div>
+      `;
+    });
+  }
+
+  function addProduct() {
+    const title = document.getElementById("pTitle").value;
+    const code = document.getElementById("pCode").value;
+    const category = document.getElementById("pCat").value;
+    const image = document.getElementById("pImg").value;
+    const desc = document.getElementById("pDesc").value;
+
+    if(!title || !code) return alert("Başlık ve kod zorunludur.");
+
+    products.push({ id: code.toLowerCase(), title, code, category, image, desc, specs: [] });
+    render();
+
+    // Formu temizle
+    document.getElementById("pTitle").value = "";
+    document.getElementById("pCode").value = "";
+    document.getElementById("pImg").value = "";
+    document.getElementById("pDesc").value = "";
+  }
+
+  function removeProduct(index) {
+    products.splice(index, 1);
+    render();
+  }
+
+  function downloadJSON() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(products, null, 2));
+    const dlAnchor = document.createElement('a');
+    dlAnchor.setAttribute("href", dataStr);
+    dlAnchor.setAttribute("download", "products.json");
+    dlAnchor.click();
+    dlAnchor.remove();
+  }
+</script>
 </body>
 </html>

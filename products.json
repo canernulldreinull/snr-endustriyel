@@ -1,0 +1,22 @@
+[
+  {
+    "id": "kagit-1",
+    "category": "kagit",
+    "title": "Premium Z-Katlama Havlu",
+    "desc": "Yüksek emiciliğe sahip, %100 selüloz çift katlı havlu. Elde dağılma yapmaz, tüm standart dispenserlerle uyumludur.",
+    "code": "HK-Z200",
+    "badge": "Çok Satan",
+    "specs": ["Kat: 2 Katlı", "Yaprak: 200 Adet/Paket", "Koli İçi: 12 Paket", "Hammadde: %100 Saf Selüloz"],
+    "image": "img/kagit-1.jpg"
+  },
+  {
+    "id": "kagit-2",
+    "category": "kagit",
+    "title": "Kurumsal Tuvalet Kağıdı",
+    "desc": "Otel, restoran ve ofisler için ideal, yumuşak dokulu ve suda kolay çözünen standart rulo tuvalet kağıdı.",
+    "code": "HK-TK72",
+    "badge": "",
+    "specs": ["Kat: 2 Katlı", "Rulo Uzunluğu: 17 Metre", "Koli İçi: 72 Rulo", "Özellik: Suda çabuk erir"],
+    "image": "img/kagit-2.jpg"
+  }
+]

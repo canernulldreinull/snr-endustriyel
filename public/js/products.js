@@ -239,10 +239,10 @@ let products = [
   }
 ];
 
-// JSON Dosyasından veya Yedek Listeden Ürünleri Yükleme
+// API'den Ürünleri Yükleme (Veritabanı Açıksa oradan çeker, yoksa yerel diziyi kullanır)
 async function initProducts() {
   try {
-    const res = await fetch('/products.json');
+    const res = await fetch('/api/products');
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
@@ -250,7 +250,7 @@ async function initProducts() {
       }
     }
   } catch (e) {
-    console.warn("products.json okunamadı, varsayılan liste kullanılıyor.", e);
+    // API kapalıysa yerel ürün listesiyle devam eder
   }
   renderProducts('all');
 }
