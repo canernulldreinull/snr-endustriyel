@@ -1,0 +1,34 @@
+backend:
+  name: github
+  repo: canernulldreinull/snr-endustriyel
+  branch: main
+
+media_folder: "img/uploads"
+public_folder: "img/uploads"
+
+collections:
+  - name: "products"
+    label: "Ürünler"
+    folder: "content/products"
+    create: true
+    slug: "{{fields.code}}"
+    extension: "json"
+    format: "json"
+    fields:
+      - { label: "Ürün Başlığı", name: "title", widget: "string" }
+      - { label: "Ürün Kodu", name: "code", widget: "string" }
+      - { 
+          label: "Kategori", 
+          name: "category", 
+          widget: "select", 
+          options: [
+            { label: "Hijyen Kağıtları", value: "kagit" },
+            { label: "Temizlik Kimyasalları", value: "kimyasal" },
+            { label: "Sarf Malzemeler", value: "sarf" },
+            { label: "Ekipmanlar & Dispenserler", value: "dispenser" }
+          ] 
+        }
+      - { label: "Rozet (Opsiyonel)", name: "badge", widget: "string", required: false }
+      - { label: "Açıklama", name: "desc", widget: "text", required: false }
+      - { label: "Ürün Görseli", name: "image", widget: "image" }
+      - { label: "Özellikler", name: "specs", widget: "list", required: false }
