@@ -1,7 +1,8 @@
 backend:
   name: github
-  repo: canernulldreinull/snr-endustriyel
+  repo: snr-endustriyel/snr-temizlik
   branch: main
+  base_url: https://decap-oauth-snr.vercel.app # Aşağıdaki OAuth servis adresi
 
 media_folder: "img/uploads"
 public_folder: "img/uploads"
