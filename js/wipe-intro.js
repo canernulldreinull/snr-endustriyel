@@ -11,39 +11,97 @@
 
   const container = document.getElementById('wipe-canvas-container');
   const canvas = document.getElementById('wipe-canvas');
-  let rag = document.getElementById('wipe-rag');
-  const hint = document.getElementById('wipe-hint-text');
   const skipBtn = document.getElementById('wipe-skip-btn');
 
   if (!container || !canvas) return;
 
-  // Bez elementi yoksa dinamik oluştur, varsa içeriğini garantiye al
-  if (!rag) {
-    rag = document.createElement('div');
-    rag.id = 'wipe-rag';
-    container.appendChild(rag);
-  }
+  // 1) Eski öğeleri temizleyip sıfırdan inline stillerle DOM'a ekleyelim
+  const oldRag = document.getElementById('wipe-rag');
+  if (oldRag) oldRag.remove();
+  const oldHint = document.getElementById('wipe-hint-text');
+  if (oldHint) oldHint.remove();
 
-  rag.className = 'pointer-events-none fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[10002] transition-transform duration-75 ease-out drop-shadow-2xl select-none';
-  rag.style.display = 'block';
-  rag.style.opacity = '1';
-  rag.style.visibility = 'visible';
-
-  rag.innerHTML = `
-    <div class="w-20 h-20 sm:w-28 sm:h-28 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-sky-400 via-sky-500 to-sky-700 p-3 sm:p-3.5 shadow-[0_15px_35px_rgba(2,132,199,0.6)] border-2 border-white/80 flex flex-col items-center justify-center text-white rotate-6">
-      <svg class="w-8 h-8 sm:w-12 sm:h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
-      </svg>
-      <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider mt-0.5 sm:mt-1 opacity-95">SNR Bez</span>
-    </div>
+  // 2) Bez Katmanı (Inline CSS ile mobilde kaybolmayı engelle)
+  const rag = document.createElement('div');
+  rag.id = 'wipe-rag';
+  rag.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999999;
+    pointer-events: none;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.05s ease-out;
   `;
 
-  if (hint) {
-    hint.className = 'pointer-events-none absolute inset-x-0 bottom-16 sm:bottom-20 z-[10001] flex flex-col items-center justify-center text-center px-4 transition-opacity duration-300 select-none';
-    hint.style.display = 'flex';
-    hint.style.opacity = '1';
-    hint.style.visibility = 'visible';
-  }
+  rag.innerHTML = `
+    <div style="
+      width: 80px;
+      height: 80px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #38bdf8 0%, #0284c7 50%, #0369a1 100%);
+      box-shadow: 0 12px 30px rgba(2, 132, 199, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.4);
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      transform: rotate(6deg);
+    ">
+      <svg style="width: 34px; height: 34px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z" />
+      </svg>
+      <span style="font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; font-family: sans-serif;">SNR BEZ</span>
+    </div>
+  `;
+  container.appendChild(rag);
+
+  // 3) İpucu Katmanı
+  const hint = document.createElement('div');
+  hint.id = 'wipe-hint-text';
+  hint.style.cssText = `
+    position: fixed;
+    bottom: 40px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999998;
+    pointer-events: none;
+    user-select: none;
+    padding: 0 16px;
+  `;
+  hint.innerHTML = `
+    <div style="
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 10px 20px;
+      border-radius: 9999px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    ">
+      <p style="
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 500;
+        margin: 0;
+        font-family: sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      ">
+        <span>Ekranı silerek temizleyin</span>
+        <span>✨</span>
+      </p>
+    </div>
+  `;
+  container.appendChild(hint);
 
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
   let isDrawing = false;
@@ -105,6 +163,7 @@
 
     const cleanRatio = transparentPixels / totalSamples;
     
+    // %30 temizlendiğinde akıcı açılış
     if (cleanRatio >= 0.30) {
       finishWipe();
     }
@@ -119,15 +178,14 @@
 
     if (!hasMoved) {
       hasMoved = true;
-      if (hint) {
-        hint.style.transition = 'opacity 0.4s ease';
-        hint.style.opacity = '0';
-      }
+      hint.style.transition = 'opacity 0.4s ease';
+      hint.style.opacity = '0';
     }
 
     ctx.globalCompositeOperation = 'destination-out';
     ctx.beginPath();
     
+    // Fırça: mobilde 45px, masaüstünde 75px
     const radius = window.innerWidth < 640 ? 45 : 75;
     
     const radialGrad = ctx.createRadialGradient(x, y, radius * 0.35, x, y, radius);
@@ -140,7 +198,7 @@
     ctx.fill();
 
     checkThrottle++;
-    if (checkThrottle % 6 === 0) {
+    if (checkThrottle % 5 === 0) {
       checkCleanPercentage();
     }
   }
@@ -153,9 +211,9 @@
       sessionStorage.setItem('snrWipeIntroSeen', '1');
     } catch (e) {}
 
-    rag.style.transition = 'opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    rag.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
     rag.style.opacity = '0';
-    rag.style.transform = 'translate(-50%, -50%) scale(0.75)';
+    rag.style.transform = 'translate(-50%, -50%) scale(0.6)';
 
     container.style.transition = 'transform 1.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 1.1s ease, filter 1.1s ease';
     container.style.transform = 'translateY(-105%)';
@@ -168,7 +226,7 @@
     }, 1300);
   }
 
-  // Pointer & Touch Desteği
+  // Pointer & Touch Olayları
   function onPointerDown(e) {
     isDrawing = true;
     wipe(e.clientX, e.clientY);
