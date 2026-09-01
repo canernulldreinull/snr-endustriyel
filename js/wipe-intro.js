@@ -11,55 +11,21 @@
 
   const container = document.getElementById('wipe-canvas-container');
   const canvas = document.getElementById('wipe-canvas');
-  let rag = document.getElementById('wipe-rag');
+  const rag = document.getElementById('wipe-rag');
   const hint = document.getElementById('wipe-hint-text');
   const skipBtn = document.getElementById('wipe-skip-btn');
 
-  if (!container || !canvas) return;
+  if (!container || !canvas || !rag) return;
 
-  // Gerçekçi 3D Rulo Peçete SVG Görselini Dinamik Olarak Yerleştir
-  if (rag) {
-    rag.innerHTML = `
-      <div class="relative w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.65)] select-none pointer-events-none">
-        <svg viewBox="0 0 160 160" class="w-full h-full transform -rotate-12" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Rulo Dış Gölge ve Gövde -->
-          <ellipse cx="60" cy="50" rx="32" ry="42" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="2"/>
-          <path d="M60 8 L125 38 C135 43 140 52 140 65 L140 105 C140 118 132 125 120 120 L58 92 Z" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2"/>
-          
-          <!-- Rulo Silindir Hacim Gölgelendirmesi -->
-          <path d="M60 8 L125 38 L125 120 L60 92 Z" fill="url(#rollGradient)"/>
-          
-          <!-- Rulo Ön Yüzü (Kağıt Katmanları Dokusu) -->
-          <ellipse cx="60" cy="50" rx="28" ry="38" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/>
-          <ellipse cx="60" cy="50" rx="22" ry="30" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
-          <ellipse cx="60" cy="50" rx="15" ry="20" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
-          
-          <!-- Masura / İç Karton Rulo Deliği -->
-          <ellipse cx="60" cy="50" rx="9" ry="13" fill="#78350f" stroke="#451a03" stroke-width="2"/>
-          <ellipse cx="60" cy="50" rx="6" ry="9" fill="#1e293b"/>
-          
-          <!-- Sarkıt Peçete Yaprağı (Koparma / Silme Ucu) -->
-          <path d="M125 38 L142 48 C148 52 150 62 146 72 L132 118 C130 125 122 128 115 124 L60 92" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
-          
-          <!-- Peçete Perforasyon / Kabartma Noktaları -->
-          <line x1="128" y1="50" x2="122" y2="110" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="3 3"/>
-          <line x1="100" y1="36" x2="94" y2="98" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="2 3"/>
-          
-          <!-- SNR Marka Baskı İmzası -->
-          <text x="82" y="78" fill="#0284c7" font-size="9" font-family="'JetBrains Mono', monospace" font-weight="bold" letter-spacing="1" transform="rotate(18 82 78)">SNR</text>
-
-          <defs>
-            <linearGradient id="rollGradient" x1="60" y1="50" x2="125" y2="79" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#cbd5e1" stop-opacity="0.6"/>
-              <stop offset="35%" stop-color="#ffffff" stop-opacity="0.9"/>
-              <stop offset="70%" stop-color="#f1f5f9" stop-opacity="0.4"/>
-              <stop offset="100%" stop-color="#64748b" stop-opacity="0.5"/>
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
-    `;
-  }
+  // Orijinal SNR Temizlik Bezi Tasarımı
+  rag.innerHTML = `
+    <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-sky-400 via-sky-500 to-brand-dark p-3.5 shadow-[0_20px_50px_rgba(2,132,199,0.5)] border-2 border-white/60 flex flex-col items-center justify-center text-white rotate-6 select-none pointer-events-none">
+      <svg class="w-10 h-10 sm:w-12 sm:h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 001.423 1.423z" />
+      </svg>
+      <span class="text-[10px] font-bold uppercase tracking-wider mt-1 opacity-90">SNR Bez</span>
+    </div>
+  `;
 
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
   let isDrawing = false;
@@ -121,7 +87,8 @@
 
     const cleanRatio = transparentPixels / totalSamples;
     
-    if (cleanRatio >= 0.40) {
+    // Yalnızca %20 silindiğinde akıcı şekilde açılır
+    if (cleanRatio >= 0.20) {
       finishWipe();
     }
   }
@@ -129,11 +96,9 @@
   function wipe(x, y) {
     if (isFinished) return;
 
-    if (rag) {
-      rag.style.left = x + 'px';
-      rag.style.top = y + 'px';
-      rag.style.transform = 'translate(-50%, -50%) rotate(-8deg) scale(1.06)';
-    }
+    rag.style.left = x + 'px';
+    rag.style.top = y + 'px';
+    rag.style.transform = 'translate(-50%, -50%) rotate(-10deg) scale(1.05)';
 
     if (!hasMoved) {
       hasMoved = true;
@@ -145,9 +110,10 @@
 
     ctx.globalCompositeOperation = 'destination-out';
     ctx.beginPath();
-    const radius = window.innerWidth < 640 ? 65 : 85;
+    // Genişletilmiş fırça çapı
+    const radius = window.innerWidth < 640 ? 85 : 115;
     
-    const radialGrad = ctx.createRadialGradient(x, y, radius * 0.35, x, y, radius);
+    const radialGrad = ctx.createRadialGradient(x, y, radius * 0.4, x, y, radius);
     radialGrad.addColorStop(0, 'rgba(0,0,0,1)');
     radialGrad.addColorStop(0.75, 'rgba(0,0,0,0.85)');
     radialGrad.addColorStop(1, 'rgba(0,0,0,0)');
@@ -157,7 +123,7 @@
     ctx.fill();
 
     checkThrottle++;
-    if (checkThrottle % 8 === 0) {
+    if (checkThrottle % 4 === 0) {
       checkCleanPercentage();
     }
   }
@@ -170,13 +136,11 @@
       sessionStorage.setItem('snrWipeIntroSeen', '1');
     } catch (e) {}
 
-    if (rag) {
-      rag.style.transition = 'opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)';
-      rag.style.opacity = '0';
-      rag.style.transform = 'translate(-50%, -50%) scale(0.75)';
-    }
+    rag.style.transition = 'opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    rag.style.opacity = '0';
+    rag.style.transform = 'translate(-50%, -50%) scale(0.75)';
 
-    container.style.transition = 'transform 1.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 1.2s ease, filter 1.2s ease';
+    container.style.transition = 'transform 1.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 1.1s ease, filter 1.1s ease';
     container.style.transform = 'translateY(-105%)';
     container.style.opacity = '0';
     container.style.filter = 'blur(8px)';
@@ -184,7 +148,7 @@
     setTimeout(() => {
       document.documentElement.style.overflow = '';
       container.remove();
-    }, 1400);
+    }, 1300);
   }
 
   function onPointerDown(e) {
@@ -201,9 +165,7 @@
 
   function onPointerUp() {
     isDrawing = false;
-    if (rag) {
-      rag.style.transform = 'translate(-50%, -50%) rotate(0deg) scale(1)';
-    }
+    rag.style.transform = 'translate(-50%, -50%) rotate(0deg) scale(1)';
     checkCleanPercentage();
   }
 
