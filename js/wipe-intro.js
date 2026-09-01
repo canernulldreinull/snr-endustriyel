@@ -1,180 +1,144 @@
-/**
- * SNR Endüstriyel — "Swipe to Clean" Splash Screen
- * Bağımlılık yok. Pointer Events ile hem mouse hem touch/pen desteklenir.
- * sessionStorage anahtarı: "snrWipeIntroSeen"
- */
 (function () {
   'use strict';
 
-  var STORAGE_KEY = 'snrWipeIntroSeen';
-  var COMPLETE_THRESHOLD = 0.85; // bu oranın üzerinde bırakılırsa otomatik tamamlanır
-
-  var overlay = document.getElementById('wipeIntroOverlay');
-  if (!overlay) return; // sayfada splash yoksa hiçbir şey yapma
-
-  var alreadySeen = false;
-  try {
-    alreadySeen = sessionStorage.getItem(STORAGE_KEY) === '1';
-  } catch (e) {
-    alreadySeen = false;
-  }
-
-  // Zaten görülmüşse: overlay'i DOM'dan temizle, kilitleri kaldır, çık.
-  if (alreadySeen) {
-    unlockScroll();
-    overlay.remove();
+  if (sessionStorage.getItem('snrWipeIntroSeen') === '1') {
+    const el = document.getElementById('wipe-canvas-container');
+    if (el) el.remove();
     return;
   }
 
-  var track = document.getElementById('wipeTrack');
-  var handle = document.getElementById('wipeHandle');
-  var hint = document.getElementById('wipeHint');
-  var skipBtn = document.getElementById('wipeSkipBtn');
+  document.documentElement.style.overflow = 'hidden';
 
-  var trackWidth = 0;
-  var handleWidth = 0;
-  var maxDistance = 0;
-  var currentX = 0;
-  var dragging = false;
-  var startPointerX = 0;
-  var startHandleX = 0;
-  var rafPending = false;
-  var finished = false;
+  const container = document.getElementById('wipe-canvas-container');
+  const canvas = document.getElementById('wipe-canvas');
+  const rag = document.getElementById('wipe-rag');
+  const hint = document.getElementById('wipe-hint-text');
+  const skipBtn = document.getElementById('wipe-skip-btn');
 
-  function measure() {
-    trackWidth = track.getBoundingClientRect().width;
-    handleWidth = handle.getBoundingClientRect().width;
-    maxDistance = Math.max(trackWidth - handleWidth - 8, 1); // 8px = handle iç boşluğu (top/left: 4px x2)
+  if (!container || !canvas || !rag) return;
+
+  const ctx = canvas.getContext('2d');
+  let isDrawing = false;
+  let hasMoved = false;
+  let clearedPixels = 0;
+  let totalPixels = 0;
+  let isFinished = false;
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    totalPixels = canvas.width * canvas.height;
+    drawFrostedGlass();
   }
 
-  function clamp(v, min, max) {
-    return Math.min(max, Math.max(min, v));
+  // Kirli / Buğulu Cam Katmanı Çizimi
+  function drawFrostedGlass() {
+    ctx.globalCompositeOperation = 'source-over';
+    
+    // Koyu lacivert buğulu zemin
+    const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    grad.addColorStop(0, '#0f172a');
+    grad.addColorStop(1, '#020617');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Üzerine hafif kir / leke dokusu
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+    for (let i = 0; i < 30; i++) {
+      ctx.beginPath();
+      ctx.arc(
+        Math.random() * canvas.width,
+        Math.random() * canvas.height,
+        Math.random() * 120 + 40,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+    }
   }
 
-  function applyFrame(x, animateSnap) {
-    currentX = clamp(x, 0, maxDistance);
-    var progress = currentX / maxDistance; // 0..1
+  resize();
+  window.addEventListener('resize', resize);
 
-    handle.classList.toggle('wipe-snapping', !!animateSnap);
-    handle.style.transform = 'translateX(' + currentX + 'px)';
-    handle.setAttribute('aria-valuenow', String(Math.round(progress * 100)));
+  // Bezle Silme Hareketi (Destination-Out ile Şeffaflaştırma)
+  function wipe(x, y) {
+    if (isFinished) return;
 
-    // Overlay'i soldan sağa "silerek" aç
-    overlay.style.clipPath = 'inset(0 0 0 ' + (progress * 100) + '%)';
+    // Bezi farenin/parmağın ucuna yapıştır
+    rag.style.left = x + 'px';
+    rag.style.top = y + 'px';
+    rag.style.transform = 'translate(-50%, -50%) rotate(-12deg) scale(1.08)';
 
-    // İpucu yazısını kaydırma başlar başlamaz soldur
-    hint.style.opacity = String(clamp(1 - progress * 2.2, 0, 1));
-
-    return progress;
-  }
-
-  function onFrameRequest(x) {
-    if (rafPending) return;
-    rafPending = true;
-    requestAnimationFrame(function () {
-      rafPending = false;
-      applyFrame(x, false);
-    });
-  }
-
-  function finishIntro() {
-    if (finished) return;
-    finished = true;
-
-    try {
-      sessionStorage.setItem(STORAGE_KEY, '1');
-    } catch (e) {
-      /* sessizce geç */
+    if (!hasMoved) {
+      hasMoved = true;
+      if (hint) hint.style.opacity = '0';
     }
 
-    applyFrame(maxDistance, true); // tam açık pozisyona kilitle
-    overlay.classList.add('wipe-fade-out');
+    // Ekranı sil
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath();
+    // Silme çapı mobilde 70px, masaüstünde 95px
+    const radius = window.innerWidth < 640 ? 70 : 95;
+    
+    const radialGrad = ctx.createRadialGradient(x, y, radius * 0.4, x, y, radius);
+    radialGrad.addColorStop(0, 'rgba(0,0,0,1)');
+    radialGrad.addColorStop(0.7, 'rgba(0,0,0,0.8)');
+    radialGrad.addColorStop(1, 'rgba(0,0,0,0)');
+    
+    ctx.fillStyle = radialGrad;
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fill();
 
-    var cleanup = function () {
-      unlockScroll();
-      overlay.remove();
-      document.dispatchEvent(new CustomEvent('wipeIntroComplete'));
-    };
+    clearedPixels += radius * radius * 0.8;
 
-    overlay.addEventListener('transitionend', cleanup, { once: true });
-    // Güvenlik ağı: transitionend tetiklenmezse yine de temizle
-    setTimeout(cleanup, 700);
+    // Yeterince silindiğinde (yaklaşık %35-40 temizlendiğinde) otomatik aç
+    if (clearedPixels > totalPixels * 0.35) {
+      finishWipe();
+    }
   }
 
-  function snapBack() {
-    applyFrame(0, true);
+  function finishWipe() {
+    if (isFinished) return;
+    isFinished = true;
+
+    try {
+      sessionStorage.setItem('snrWipeIntroSeen', '1');
+    } catch (e) {}
+
+    rag.style.opacity = '0';
+    container.style.transition = 'opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+    container.style.opacity = '0';
+
+    setTimeout(() => {
+      document.documentElement.style.overflow = '';
+      container.remove();
+    }, 600);
   }
 
-  function unlockScroll() {
-    document.documentElement.classList.remove('wipe-intro-lock', 'wipe-intro-skip');
+  // Pointer & Touch Olayları
+  function onPointerDown(e) {
+    isDrawing = true;
+    wipe(e.clientX, e.clientY);
   }
 
-  function getPointerX(evt) {
-    return evt.clientX;
-  }
-
-  function onPointerDown(evt) {
-    if (finished) return;
-    dragging = true;
-    measure();
-    startPointerX = getPointerX(evt);
-    startHandleX = currentX;
-    handle.setPointerCapture && handle.setPointerCapture(evt.pointerId);
-    handle.classList.remove('wipe-snapping');
-  }
-
-  function onPointerMove(evt) {
-    if (!dragging || finished) return;
-    var delta = getPointerX(evt) - startPointerX;
-    onFrameRequest(startHandleX + delta);
+  function onPointerMove(e) {
+    if (!isDrawing && e.pointerType === 'touch') return;
+    // Masaüstünde gezinirken de hafif silsin veya tıklayınca silsin
+    if (isDrawing || e.pointerType === 'mouse') {
+      wipe(e.clientX, e.clientY);
+    }
   }
 
   function onPointerUp() {
-    if (!dragging || finished) return;
-    dragging = false;
-    var progress = maxDistance > 0 ? currentX / maxDistance : 0;
-    if (progress >= COMPLETE_THRESHOLD) {
-      finishIntro();
-    } else {
-      snapBack();
-    }
+    isDrawing = false;
+    rag.style.transform = 'translate(-50%, -50%) rotate(0deg) scale(1)';
   }
 
-  // Klavye erişilebilirliği: Ok tuşlarıyla kaydırma, Enter ile tamamlama
-  function onKeyDown(evt) {
-    if (finished) return;
-    var step = Math.max(maxDistance * 0.08, 16);
-    if (evt.key === 'ArrowRight') {
-      evt.preventDefault();
-      applyFrame(currentX + step, true);
-    } else if (evt.key === 'ArrowLeft') {
-      evt.preventDefault();
-      applyFrame(currentX - step, true);
-    } else if (evt.key === 'Enter' || evt.key === ' ') {
-      evt.preventDefault();
-      finishIntro();
-    } else if (evt.key === 'Escape') {
-      finishIntro();
-    }
-  }
-
-  measure();
-  applyFrame(0, false);
-
-  handle.addEventListener('pointerdown', onPointerDown);
+  container.addEventListener('pointerdown', onPointerDown);
   window.addEventListener('pointermove', onPointerMove, { passive: true });
-  window.addEventListener('pointerup', onPointerUp, { passive: true });
-  window.addEventListener('pointercancel', onPointerUp, { passive: true });
-  handle.addEventListener('keydown', onKeyDown);
-
-  window.addEventListener('resize', function () {
-    if (finished) return;
-    var wasProgress = maxDistance > 0 ? currentX / maxDistance : 0;
-    measure();
-    applyFrame(wasProgress * maxDistance, false);
-  });
+  window.addEventListener('pointerup', onPointerUp);
 
   if (skipBtn) {
-    skipBtn.addEventListener('click', finishIntro);
+    skipBtn.addEventListener('click', finishWipe);
   }
 })();
