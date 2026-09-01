@@ -11,21 +11,39 @@
 
   const container = document.getElementById('wipe-canvas-container');
   const canvas = document.getElementById('wipe-canvas');
-  const rag = document.getElementById('wipe-rag');
+  let rag = document.getElementById('wipe-rag');
   const hint = document.getElementById('wipe-hint-text');
   const skipBtn = document.getElementById('wipe-skip-btn');
 
-  if (!container || !canvas || !rag) return;
+  if (!container || !canvas) return;
 
-  // Orijinal SNR Temizlik Bezi Tasarımı
+  // Bez elementi yoksa dinamik oluştur, varsa içeriğini garantiye al
+  if (!rag) {
+    rag = document.createElement('div');
+    rag.id = 'wipe-rag';
+    container.appendChild(rag);
+  }
+
+  rag.className = 'pointer-events-none fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[10002] transition-transform duration-75 ease-out drop-shadow-2xl select-none';
+  rag.style.display = 'block';
+  rag.style.opacity = '1';
+  rag.style.visibility = 'visible';
+
   rag.innerHTML = `
-    <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-sky-400 via-sky-500 to-brand-dark p-3.5 shadow-[0_20px_50px_rgba(2,132,199,0.5)] border-2 border-white/60 flex flex-col items-center justify-center text-white rotate-6 select-none pointer-events-none">
-      <svg class="w-10 h-10 sm:w-12 sm:h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+    <div class="w-20 h-20 sm:w-28 sm:h-28 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-sky-400 via-sky-500 to-sky-700 p-3 sm:p-3.5 shadow-[0_15px_35px_rgba(2,132,199,0.6)] border-2 border-white/80 flex flex-col items-center justify-center text-white rotate-6">
+      <svg class="w-8 h-8 sm:w-12 sm:h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
         <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
       </svg>
-      <span class="text-[10px] font-bold uppercase tracking-wider mt-1 opacity-90">SNR Bez</span>
+      <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider mt-0.5 sm:mt-1 opacity-95">SNR Bez</span>
     </div>
   `;
+
+  if (hint) {
+    hint.className = 'pointer-events-none absolute inset-x-0 bottom-16 sm:bottom-20 z-[10001] flex flex-col items-center justify-center text-center px-4 transition-opacity duration-300 select-none';
+    hint.style.display = 'flex';
+    hint.style.opacity = '1';
+    hint.style.visibility = 'visible';
+  }
 
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
   let isDrawing = false;
@@ -87,7 +105,6 @@
 
     const cleanRatio = transparentPixels / totalSamples;
     
-    // %30 silindiğinde akıcı açılış başlar
     if (cleanRatio >= 0.30) {
       finishWipe();
     }
@@ -111,7 +128,6 @@
     ctx.globalCompositeOperation = 'destination-out';
     ctx.beginPath();
     
-    // Mobilde 45px, Masaüstünde 75px fırça çapı
     const radius = window.innerWidth < 640 ? 45 : 75;
     
     const radialGrad = ctx.createRadialGradient(x, y, radius * 0.35, x, y, radius);
@@ -152,6 +168,7 @@
     }, 1300);
   }
 
+  // Pointer & Touch Desteği
   function onPointerDown(e) {
     isDrawing = true;
     wipe(e.clientX, e.clientY);
