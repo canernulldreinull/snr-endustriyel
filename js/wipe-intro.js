@@ -111,8 +111,8 @@
     ctx.globalCompositeOperation = 'destination-out';
     ctx.beginPath();
     
-    // Mobilde 65px, Masaüstünde 95px fırça çapı
-    const radius = window.innerWidth < 640 ? 65 : 95;
+    // Mobilde 45px, Masaüstünde 75px fırça çapı
+    const radius = window.innerWidth < 640 ? 45 : 75;
     
     const radialGrad = ctx.createRadialGradient(x, y, radius * 0.35, x, y, radius);
     radialGrad.addColorStop(0, 'rgba(0,0,0,1)');
