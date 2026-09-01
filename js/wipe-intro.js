@@ -15,13 +15,12 @@
 
   if (!container || !canvas) return;
 
-  // 1) Eski öğeleri temizleyip sıfırdan inline stillerle DOM'a ekleyelim
   const oldRag = document.getElementById('wipe-rag');
   if (oldRag) oldRag.remove();
   const oldHint = document.getElementById('wipe-hint-text');
   if (oldHint) oldHint.remove();
 
-  // 2) Bez Katmanı (Inline CSS ile mobilde kaybolmayı engelle)
+  // 1) Bez Katmanı
   const rag = document.createElement('div');
   rag.id = 'wipe-rag';
   rag.style.cssText = `
@@ -40,8 +39,8 @@
 
   rag.innerHTML = `
     <div style="
-      width: 80px;
-      height: 80px;
+      width: 76px;
+      height: 76px;
       border-radius: 20px;
       background: linear-gradient(135deg, #38bdf8 0%, #0284c7 50%, #0369a1 100%);
       box-shadow: 0 12px 30px rgba(2, 132, 199, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.4);
@@ -53,20 +52,20 @@
       color: #ffffff;
       transform: rotate(6deg);
     ">
-      <svg style="width: 34px; height: 34px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z" />
+      <svg style="width: 32px; height: 32px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
       </svg>
       <span style="font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; font-family: sans-serif;">SNR BEZ</span>
     </div>
   `;
   container.appendChild(rag);
 
-  // 3) İpucu Katmanı
+  // 2) İpucu Katmanı (Mobil alt barın üstünde kalması için 12vh + safe area)
   const hint = document.createElement('div');
   hint.id = 'wipe-hint-text';
   hint.style.cssText = `
     position: fixed;
-    bottom: 40px;
+    bottom: calc(12vh + env(safe-area-inset-bottom, 0px));
     left: 0;
     right: 0;
     display: flex;
@@ -79,22 +78,24 @@
   `;
   hint.innerHTML = `
     <div style="
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 10px 20px;
+      background: rgba(15, 23, 42, 0.90);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 10px 22px;
       border-radius: 9999px;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
     ">
       <p style="
         color: #ffffff;
         font-size: 14px;
-        font-weight: 500;
+        font-weight: 600;
         margin: 0;
         font-family: sans-serif;
         display: flex;
         align-items: center;
         gap: 6px;
+        letter-spacing: 0.02em;
       ">
         <span>Ekranı silerek temizleyin</span>
         <span>✨</span>
@@ -142,6 +143,7 @@
   window.addEventListener('resize', resize);
 
   function checkCleanPercentage() {
+    const isMobile = window.innerWidth < 640;
     const w = canvas.width;
     const h = canvas.height;
     const sampleW = Math.floor(w / 16);
@@ -163,8 +165,10 @@
 
     const cleanRatio = transparentPixels / totalSamples;
     
-    // %30 temizlendiğinde akıcı açılış
-    if (cleanRatio >= 0.30) {
+    // Eşik: Mobilde %18, Masaüstünde %30
+    const targetThreshold = isMobile ? 0.18 : 0.30;
+    
+    if (cleanRatio >= targetThreshold) {
       finishWipe();
     }
   }
@@ -185,8 +189,8 @@
     ctx.globalCompositeOperation = 'destination-out';
     ctx.beginPath();
     
-    // Fırça: mobilde 45px, masaüstünde 75px
-    const radius = window.innerWidth < 640 ? 45 : 75;
+    // Fırça: mobilde 55px (rahat silinsin), masaüstünde 75px
+    const radius = window.innerWidth < 640 ? 55 : 75;
     
     const radialGrad = ctx.createRadialGradient(x, y, radius * 0.35, x, y, radius);
     radialGrad.addColorStop(0, 'rgba(0,0,0,1)');
@@ -198,7 +202,7 @@
     ctx.fill();
 
     checkThrottle++;
-    if (checkThrottle % 5 === 0) {
+    if (checkThrottle % 4 === 0) {
       checkCleanPercentage();
     }
   }
@@ -226,7 +230,6 @@
     }, 1300);
   }
 
-  // Pointer & Touch Olayları
   function onPointerDown(e) {
     isDrawing = true;
     wipe(e.clientX, e.clientY);
