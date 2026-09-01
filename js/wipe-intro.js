@@ -17,17 +17,15 @@
 
   if (!container || !canvas || !rag) return;
 
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
   let isDrawing = false;
   let hasMoved = false;
-  let clearedPixels = 0;
-  let totalPixels = 0;
   let isFinished = false;
+  let checkThrottle = 0;
 
   function resize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    totalPixels = canvas.width * canvas.height;
     drawFrostedGlass();
   }
 
@@ -35,21 +33,21 @@
   function drawFrostedGlass() {
     ctx.globalCompositeOperation = 'source-over';
     
-    // Koyu lacivert buğulu zemin
+    // Koyu buğulu zemin
     const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
     grad.addColorStop(0, '#0f172a');
     grad.addColorStop(1, '#020617');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Üzerine hafif kir / leke dokusu
+    // Leke dokuları
     ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 25; i++) {
       ctx.beginPath();
       ctx.arc(
         Math.random() * canvas.width,
         Math.random() * canvas.height,
-        Math.random() * 120 + 40,
+        Math.random() * 100 + 30,
         0,
         Math.PI * 2
       );
@@ -60,40 +58,67 @@
   resize();
   window.addEventListener('resize', resize);
 
-  // Bezle Silme Hareketi (Destination-Out ile Şeffaflaştırma)
+  // Gerçek temizlik oranını ölçme (Performansı yormadan seyrek kontrol)
+  function checkCleanPercentage() {
+    const w = canvas.width;
+    const h = canvas.height;
+    // Performans için 1/16 çözünürlükte örnekleme yapıyoruz
+    const sampleW = Math.floor(w / 16);
+    const sampleH = Math.floor(h / 16);
+    
+    const imgData = ctx.getImageData(0, 0, w, h);
+    const data = imgData.data;
+    let transparentPixels = 0;
+    const totalSamples = sampleW * sampleH;
+
+    for (let y = 0; y < h; y += 16) {
+      for (let x = 0; x < w; x += 16) {
+        const alphaIndex = (y * w + x) * 4 + 3;
+        if (data[alphaIndex] < 64) {
+          transparentPixels++;
+        }
+      }
+    }
+
+    const cleanRatio = transparentPixels / totalSamples;
+    
+    // Ekranın en az %60'ı silindiğinde açılışı tamamla
+    if (cleanRatio >= 0.60) {
+      finishWipe();
+    }
+  }
+
+  // Bezle Silme Hareketi
   function wipe(x, y) {
     if (isFinished) return;
 
-    // Bezi farenin/parmağın ucuna yapıştır
     rag.style.left = x + 'px';
     rag.style.top = y + 'px';
-    rag.style.transform = 'translate(-50%, -50%) rotate(-12deg) scale(1.08)';
+    rag.style.transform = 'translate(-50%, -50%) rotate(-10deg) scale(1.05)';
 
     if (!hasMoved) {
       hasMoved = true;
       if (hint) hint.style.opacity = '0';
     }
 
-    // Ekranı sil
+    // Ekranı sil (daha kontrollü yarıçap: mobilde 48px, masaüstünde 64px)
     ctx.globalCompositeOperation = 'destination-out';
     ctx.beginPath();
-    // Silme çapı mobilde 70px, masaüstünde 95px
-    const radius = window.innerWidth < 640 ? 70 : 95;
+    const radius = window.innerWidth < 640 ? 48 : 64;
     
-    const radialGrad = ctx.createRadialGradient(x, y, radius * 0.4, x, y, radius);
+    const radialGrad = ctx.createRadialGradient(x, y, radius * 0.3, x, y, radius);
     radialGrad.addColorStop(0, 'rgba(0,0,0,1)');
-    radialGrad.addColorStop(0.7, 'rgba(0,0,0,0.8)');
+    radialGrad.addColorStop(0.7, 'rgba(0,0,0,0.85)');
     radialGrad.addColorStop(1, 'rgba(0,0,0,0)');
     
     ctx.fillStyle = radialGrad;
     ctx.arc(x, y, radius, 0, Math.PI * 2);
     ctx.fill();
 
-    clearedPixels += radius * radius * 0.8;
-
-    // Yeterince silindiğinde (yaklaşık %35-40 temizlendiğinde) otomatik aç
-    if (clearedPixels > totalPixels * 0.35) {
-      finishWipe();
+    // Her 12 harekette bir oran kontrolü yap
+    checkThrottle++;
+    if (checkThrottle % 12 === 0) {
+      checkCleanPercentage();
     }
   }
 
@@ -106,16 +131,16 @@
     } catch (e) {}
 
     rag.style.opacity = '0';
-    container.style.transition = 'opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+    container.style.transition = 'opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1)';
     container.style.opacity = '0';
 
     setTimeout(() => {
       document.documentElement.style.overflow = '';
       container.remove();
-    }, 600);
+    }, 650);
   }
 
-  // Pointer & Touch Olayları
+  // Event Listener'lar
   function onPointerDown(e) {
     isDrawing = true;
     wipe(e.clientX, e.clientY);
@@ -123,7 +148,6 @@
 
   function onPointerMove(e) {
     if (!isDrawing && e.pointerType === 'touch') return;
-    // Masaüstünde gezinirken de hafif silsin veya tıklayınca silsin
     if (isDrawing || e.pointerType === 'mouse') {
       wipe(e.clientX, e.clientY);
     }
@@ -132,6 +156,7 @@
   function onPointerUp() {
     isDrawing = false;
     rag.style.transform = 'translate(-50%, -50%) rotate(0deg) scale(1)';
+    checkCleanPercentage();
   }
 
   container.addEventListener('pointerdown', onPointerDown);
