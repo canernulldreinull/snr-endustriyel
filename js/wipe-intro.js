@@ -21,7 +21,7 @@
   rag.innerHTML = `
     <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-sky-400 via-sky-500 to-brand-dark p-3.5 shadow-[0_20px_50px_rgba(2,132,199,0.5)] border-2 border-white/60 flex flex-col items-center justify-center text-white rotate-6 select-none pointer-events-none">
       <svg class="w-10 h-10 sm:w-12 sm:h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 001.423 1.423z" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
       </svg>
       <span class="text-[10px] font-bold uppercase tracking-wider mt-1 opacity-90">SNR Bez</span>
     </div>
@@ -87,8 +87,8 @@
 
     const cleanRatio = transparentPixels / totalSamples;
     
-    // Yalnızca %20 silindiğinde akıcı şekilde açılır
-    if (cleanRatio >= 0.20) {
+    // %30 silindiğinde akıcı açılış başlar
+    if (cleanRatio >= 0.30) {
       finishWipe();
     }
   }
@@ -110,10 +110,11 @@
 
     ctx.globalCompositeOperation = 'destination-out';
     ctx.beginPath();
-    // Genişletilmiş fırça çapı
-    const radius = window.innerWidth < 640 ? 85 : 115;
     
-    const radialGrad = ctx.createRadialGradient(x, y, radius * 0.4, x, y, radius);
+    // Mobilde 65px, Masaüstünde 95px fırça çapı
+    const radius = window.innerWidth < 640 ? 65 : 95;
+    
+    const radialGrad = ctx.createRadialGradient(x, y, radius * 0.35, x, y, radius);
     radialGrad.addColorStop(0, 'rgba(0,0,0,1)');
     radialGrad.addColorStop(0.75, 'rgba(0,0,0,0.85)');
     radialGrad.addColorStop(1, 'rgba(0,0,0,0)');
@@ -123,7 +124,7 @@
     ctx.fill();
 
     checkThrottle++;
-    if (checkThrottle % 4 === 0) {
+    if (checkThrottle % 6 === 0) {
       checkCleanPercentage();
     }
   }
