@@ -245,3 +245,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+// Arama çubuğunu global dinle (Her durumda yakalar)
+document.addEventListener('input', (e) => {
+  if (e.target && e.target.id === 'product-search') {
+    renderProducts();
+  }
+});
