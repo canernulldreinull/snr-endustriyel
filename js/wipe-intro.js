@@ -77,6 +77,7 @@
 
     const cleanRatio = transparentPixels / totalSamples;
     
+    // %40 silindiğinde akıcı kapanış başlar
     if (cleanRatio >= 0.40) {
       finishWipe();
     }
@@ -91,7 +92,10 @@
 
     if (!hasMoved) {
       hasMoved = true;
-      if (hint) hint.style.opacity = '0';
+      if (hint) {
+        hint.style.transition = 'opacity 0.4s ease';
+        hint.style.opacity = '0';
+      }
     }
 
     ctx.globalCompositeOperation = 'destination-out';
@@ -113,6 +117,7 @@
     }
   }
 
+  // Ultra Akıcı ve Kaygan Kapanış
   function finishWipe() {
     if (isFinished) return;
     isFinished = true;
@@ -121,18 +126,21 @@
       sessionStorage.setItem('snrWipeIntroSeen', '1');
     } catch (e) {}
 
-    rag.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+    // Bez hafifçe küçülerek yumuşakça kaybolur
+    rag.style.transition = 'opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)';
     rag.style.opacity = '0';
-    rag.style.transform = 'translate(-50%, -50%) scale(0.85)';
+    rag.style.transform = 'translate(-50%, -50%) scale(0.75)';
 
-    container.style.transition = 'transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1)';
-    container.style.transform = 'translateY(-100%)';
+    // Perde 1.4 saniyede ipek gibi yukarı süzülür
+    container.style.transition = 'transform 1.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 1.2s ease, filter 1.2s ease';
+    container.style.transform = 'translateY(-105%)';
     container.style.opacity = '0';
+    container.style.filter = 'blur(8px)';
 
     setTimeout(() => {
       document.documentElement.style.overflow = '';
       container.remove();
-    }, 850);
+    }, 1400);
   }
 
   function onPointerDown(e) {
